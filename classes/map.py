@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plt
 from classes.food import Food
+from classes.agent import Agent
+from classes.water import Water
+import random
+
 
 class Map:
     def __init__(self, width, height):
@@ -7,6 +11,7 @@ class Map:
         self.height = height
         self.food = []  
         self.agents = [] 
+        self.water = []
 
         # Activar modo interactivo y crear figura/ax
         plt.ion()
@@ -21,6 +26,14 @@ class Map:
         else:
             self.food.append(food)
  
+    def add_water(self, water=None):
+        if water is None:
+            return
+        if isinstance(water, list):
+            for w in water:
+                self.water.append(w)
+        else:
+            self.water.append(water)
 
     def add_agent(self, agent):
         if agent is None:
@@ -50,6 +63,12 @@ class Map:
             if comida.pos is not None:
                 x, y = comida.pos
                 self.ax.plot(x + 0.5, y + 0.5, 'ro')
+        
+        # Dibujar agua
+        for water in self.water:
+            if water.pos is not None:
+                x, y = water.pos
+                self.ax.plot(x + 0.5, y + 0.5, marker='s', color='blue', markersize=12, linestyle='')
 
         self.ax.set_aspect('equal', adjustable='box')
         self.fig.canvas.draw()

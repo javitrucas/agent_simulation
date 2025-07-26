@@ -1,6 +1,7 @@
 from classes.agent import Agent
 from classes.food import Food 
 from classes.map import Map
+from classes.water import Water
 import matplotlib.pyplot as plt
 import random
 
@@ -21,9 +22,17 @@ for _ in range(rand_comida):
     food=Food(map=mapa)
     comida.append(food)
 
+# Crear agua
+rand_water=random.randint(2, 5)
+water=[]
+for _ in range(rand_water):
+    wat=Water(map=mapa)
+    water.append(wat)
+
 # Añadir agente al mapa
 mapa.add_agent(agente)
 mapa.add_food(comida)
+mapa.add_water(water)
 #mapa.visualizar_mapa()
 
 # Mover agente y sacar información
@@ -32,9 +41,10 @@ while any(ag.energy > 0 and ag.pos is not None for ag in agente):
     print(f"Iteración {i}")
     for idx, ag in enumerate(agente):
         if ag.energy > 0 and ag.pos is not None:
-            print(f"Posición del agente {idx}: {ag.pos}")
-            print(f"Energía del agente {idx}: {ag.energy}")
-            print(f"Tiene hambre el agente {idx}: {ag.is_hungry()}")
+            #print(f"Posición del agente {idx}: {ag.pos}")
+            #print(f"Energía del agente {idx}: {ag.energy}")
+            #print(f"Tiene hambre el agente {idx}: {ag.hunger_threshold}")
+            print(f"Tiene sed el agente {idx}: {ag.thirst_threshold}")
             ag.smart_move(mapa)
             ag.update(mapa)
     mapa.visualizar_mapa()
@@ -62,4 +72,4 @@ for ag in agente:
 plt.imshow(heatmap, cmap='hot', interpolation='nearest', extent=[0, mapa.width, 0, mapa.height])
 plt.colorbar()
 plt.gca().invert_yaxis()
-# plt.show(block=True)
+plt.show(block=True)

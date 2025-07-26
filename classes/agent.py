@@ -1,17 +1,19 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=10, velocity=1, history=None, hunger_threshold=10, age=1, map=None, sex=None):
+    def __init__(self, pos=None, energy=10, thirst=20, velocity=1, history=None, hunger_threshold=7, thirst_threshold=10, age=1, map=None, sex=None):
         if pos is None:
             self.pos = self.random_position(map)
         else:
             self.pos = pos
         self.energy = energy
+        self.thirst = thirst
         self.velocity = velocity
         self.history = []
         self.hunger_threshold = hunger_threshold
+        self.thirst_threshold = thirst_threshold
         self.age = age
-        self.sex=sex
+        self.sex=self.select_sex()
 
     def random_move(self, map):
         if self.energy <= 0 or self.pos is None:
@@ -21,12 +23,17 @@ class Agent:
         movimientos = [norte, sur, este, oeste, stay]
         random.shuffle(movimientos)  # Para probar primero direcciones aleatorias
 
+        # Crear conjunto de posiciones con agua
+        water_positions = {w.pos for w in map.water if w.pos is not None}
+
         for direccion in movimientos:
             nueva_pos = direccion(self)
             x, y = nueva_pos
-            if 0 <= x < map.width and 0 <= y < map.height:
+            if (0 <= x < map.width and
+                0 <= y < map.height and
+                nueva_pos not in water_positions):
                 self.pos = nueva_pos
-                break  # Se mueve solo a la primera posición válida
+                break  # Solo se mueve a la primera posición válida sin agua
 
     def smart_move(self, map):
         if self.energy <= 0 or self.pos is None:
@@ -49,13 +56,20 @@ class Agent:
                 food.eaten()  # Marca la comida como comida o elimínala del mapa
                 break  # Solo come una comida por actualización
 
-        # Reduce energía al actualizar
+        # Intenta beber agua si hay agua en el mapa
+        for water in map.water:
+            self.drink(water)
+
+        # Reduce energía y sed al actualizar
         self.energy -= 1
-        if self.energy <= 0:
+        self.thirst -= 1
+        if self.energy <= 0 or self.thirst <= 0:
             self.energy = 0
-            print("El agente se ha quedado sin energía y MUERE.")
+            self.thirst = 0
+            print("El agente se ha quedado sin energía o agua y MUERE.")
             self.pos = None
-        
+
+        # Actualizar edad e historial de posiciones
         if self.energy > 0 and self.pos is not None:
             self.age+=1
             # Guarda la posición actual en el historial
@@ -67,8 +81,26 @@ class Agent:
             return True
         return False
     
+    def drink(self, water):
+        x, y = self.pos
+        drinkable_area = [
+            (x, y),            # Centro
+            (x + 1, y),        # Derecha
+            (x - 1, y),        # Izquierda
+            (x, y + 1),        # Abajo
+            (x, y - 1)         # Arriba
+        ]
+        
+        if water.pos in drinkable_area:
+            self.thirst += water.energy
+            return True
+        return False
+    
     def is_hungry(self):
         return self.energy <= self.hunger_threshold
+    
+    def is_thirsty(self):
+        return self.thirst <= self.thirst_threshold
     
     def search_for_food(self, map):
         visible_positions = self.view()
@@ -112,6 +144,10 @@ class Agent:
         x = random.randint(0, map.width - 1)
         y = random.randint(0, map.height - 1)
         return (x, y)
+    
+    def select_sex(self):
+        sexos=["hombre", "mujer"]
+        return random.shuffle(sexos)
                 
 # Fuera de la clase Agent
 def stay(agente):
