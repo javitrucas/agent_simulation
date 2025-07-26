@@ -1,7 +1,7 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=10, thirst=20, velocity=1, history=None, hunger_threshold=7, thirst_threshold=10, age=1, map=None, sex=None):
+    def __init__(self, pos=None, energy=10, thirst=20, velocity=1, history=None, hunger_threshold=7, thirst_threshold=10, age=1, map=None, sex=None, life_span=None):
         if pos is None:
             self.pos = self.random_position(map)
         else:
@@ -14,6 +14,7 @@ class Agent:
         self.thirst_threshold = thirst_threshold
         self.age = age
         self.sex=self.select_sex()
+        self.life_span = self.life_span()
 
     def random_move(self, map):
         if self.energy <= 0 or self.pos is None:
@@ -45,35 +46,45 @@ class Agent:
                 self.move_towards(ideal_pos)
             else:
                 self.random_move(map)
-        else:
-            # Implementar lógica para moverse aleatoriamente
+        elif self.is_thirsty():
+            ideal_pos = self.search_for_water(map)
+            if ideal_pos is not None:
+                self.move_towards(ideal_pos)
+            else:
+                self.random_move(map)
+        elif self.energy > 0 and self.thirst > 0:
             self.random_move(map)
 
     def update(self, map):
         # Intenta comer cualquier comida que esté en la posición actual
-        for food in map.food:
-            if self.eat(food):
-                food.eaten()  # Marca la comida como comida o elimínala del mapa
-                break  # Solo come una comida por actualización
+        if self.is_hungry(): 
+            for food in map.food:
+                if self.eat(food):
+                    food.eaten()  # Marca la comida como comida o elimínala del mapa
+                    break
 
-        # Intenta beber agua si hay agua en el mapa
-        for water in map.water:
-            self.drink(water)
+        # Intenta beber si tiene sed
+        if self.is_thirsty():
+            for water in map.water:
+                if self.drink(water):
+                    break  # Solo bebe una vez por turno
 
         # Reduce energía y sed al actualizar
         self.energy -= 1
         self.thirst -= 1
+
+        # Verifica si el agente ha muerto
         if self.energy <= 0 or self.thirst <= 0:
             self.energy = 0
             self.thirst = 0
             print("El agente se ha quedado sin energía o agua y MUERE.")
             self.pos = None
 
-        # Actualizar edad e historial de posiciones
+        # Actualiza la edad y el historial de posiciones
         if self.energy > 0 and self.pos is not None:
-            self.age+=1
-            # Guarda la posición actual en el historial
+            self.age += 1
             self.history.append(self.pos)
+
 
     def eat(self, food):
         if food.pos == self.pos:
@@ -90,12 +101,13 @@ class Agent:
             (x, y + 1),        # Abajo
             (x, y - 1)         # Arriba
         ]
-        
+
         if water.pos in drinkable_area:
+            print(f"Agente bebe agua en {water.pos}")
             self.thirst += water.energy
             return True
         return False
-    
+
     def is_hungry(self):
         return self.energy <= self.hunger_threshold
     
@@ -108,6 +120,15 @@ class Agent:
             for food in map.food:
                 if food.pos == pos:
                     print(f"Comida encontrada en {pos}")
+                    return pos
+        return None
+
+    def search_for_water(self, map):
+        visible_positions = self.view()
+        for pos in visible_positions:
+            for water in map.water:
+                if water.pos == pos:
+                    print(f"Agua encontrada en {pos}")
                     return pos
         return None
 
@@ -146,8 +167,12 @@ class Agent:
         return (x, y)
     
     def select_sex(self):
-        sexos=["hombre", "mujer"]
-        return random.shuffle(sexos)
+        sexos = ["hombre", "mujer"]
+        return random.choice(sexos)
+    
+    def life_span(self):
+        return random.randint(40, 100)
+
                 
 # Fuera de la clase Agent
 def stay(agente):

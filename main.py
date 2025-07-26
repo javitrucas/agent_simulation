@@ -35,23 +35,27 @@ mapa.add_food(comida)
 mapa.add_water(water)
 #mapa.visualizar_mapa()
 
-# Mover agente y sacar información
+# Mover agente
 i = 1
 while any(ag.energy > 0 and ag.pos is not None for ag in agente):
-    print(f"Iteración {i}")
+    print(f"\nIteración {i}")
     for idx, ag in enumerate(agente):
         if ag.energy > 0 and ag.pos is not None:
-            #print(f"Posición del agente {idx}: {ag.pos}")
-            #print(f"Energía del agente {idx}: {ag.energy}")
-            #print(f"Tiene hambre el agente {idx}: {ag.hunger_threshold}")
-            print(f"Tiene sed el agente {idx}: {ag.thirst_threshold}")
+            print(f"Posición del agente {idx}: {ag.pos}")
+            print(f"Energía del agente {idx}: {ag.energy}")
+            print(f"Sed del agente {idx}: {ag.thirst}")
             ag.smart_move(mapa)
             ag.update(mapa)
     mapa.visualizar_mapa()
     i += 1
 
+# Mostrar datos de los agentes
+print("\nDatos de los agentes:")
 for idx, ag in enumerate(agente):
+    print(f"\nAgente {idx}:")
     print(f"Edad del agente {idx}: {ag.age}")
+    print(f"Sexo del agente {idx}: {ag.sex}")
+    print(f"Esperanza de vida del agente {idx}: {ag.life_span}")
 
 # Mostrar historial de posiciones de cada agente
 for idx, ag in enumerate(agente):
@@ -72,4 +76,4 @@ for ag in agente:
 plt.imshow(heatmap, cmap='hot', interpolation='nearest', extent=[0, mapa.width, 0, mapa.height])
 plt.colorbar()
 plt.gca().invert_yaxis()
-plt.show(block=True)
+# plt.show(block=True)
