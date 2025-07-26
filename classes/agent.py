@@ -1,7 +1,7 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=10, velocity=1, history=None, hunger_threshold=10, age=1, map=None):
+    def __init__(self, pos=None, energy=10, velocity=1, history=None, hunger_threshold=10, age=1, map=None, sex=None):
         if pos is None:
             self.pos = self.random_position(map)
         else:
@@ -11,6 +11,7 @@ class Agent:
         self.history = []
         self.hunger_threshold = hunger_threshold
         self.age = age
+        self.sex=sex
 
     def random_move(self, map):
         if self.energy <= 0 or self.pos is None:
