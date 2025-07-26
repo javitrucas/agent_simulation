@@ -76,7 +76,7 @@ class Agent:
         self.thirst -= 1
 
         # Verifica si el agente ha muerto
-        if self.energy <= 0 or self.thirst <= 0:
+        if self.energy <= 0 or self.thirst <= 0 or self.age > self.life_span:
             self.energy = 0
             self.thirst = 0
             print("El agente se ha quedado sin energía o agua y MUERE.")
@@ -193,7 +193,16 @@ class Agent:
     
     def life_span(self):
         return random.randint(40, 100)
-
+    
+    def couse_death(self):
+        if self.age >= self.life_span:
+            return "Edad"
+        elif self.energy <= 0:
+            return "Energía"
+        elif self.thirst <= 0:
+            return "Sed"
+        else:
+            return "Desconocido"
                 
 # Fuera de la clase Agent
 def stay(agente):

@@ -57,6 +57,7 @@ for idx, ag in enumerate(agente):
     print(f"Edad del agente {idx}: {ag.age}")
     print(f"Sexo del agente {idx}: {ag.sex}")
     print(f"Esperanza de vida del agente {idx}: {ag.life_span}")
+    print(f"Causa de muerte del agente {idx}: {ag.couse_death()}")
 
 # Mostrar historial de posiciones de cada agente
 for idx, ag in enumerate(agente):
