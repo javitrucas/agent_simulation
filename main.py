@@ -2,28 +2,33 @@ from classes.agent import Agent
 from classes.food import Food 
 from classes.map import Map
 import matplotlib.pyplot as plt
+import random
 
 # Crear mapa
 mapa=Map(10, 10)
 
 # Crear agente
-ag=Agent(map=mapa)
-ag2=Agent(energy=8, map=mapa)
-agente=[ag, ag2]
+rand_ag=random.randint(1, 5)
+agente=[]
+for _ in range(rand_ag):
+    ag=Agent(energy=random.randint(7, 12), map=mapa)
+    agente.append(ag)
 
 # Crear comida
-c=Food(map=mapa)
-c2=Food(map=mapa)
-comida=[c, c2]
+rand_comida=random.randint(2, 8)
+comida=[]
+for _ in range(rand_comida):
+    food=Food(map=mapa)
+    comida.append(food)
 
 # Añadir agente al mapa
 mapa.add_agent(agente)
 mapa.add_food(comida)
 #mapa.visualizar_mapa()
 
-# Mover agente aleatoriamente y sacar información
-i=1
-for _ in range(20):  # Realizar movimientos aleatorios
+# Mover agente y sacar información
+i = 1
+while any(ag.energy > 0 and ag.pos is not None for ag in agente):
     print(f"Iteración {i}")
     for idx, ag in enumerate(agente):
         if ag.energy > 0 and ag.pos is not None:
@@ -32,7 +37,6 @@ for _ in range(20):  # Realizar movimientos aleatorios
             print(f"Tiene hambre el agente {idx}: {ag.is_hungry()}")
             ag.smart_move(mapa)
             ag.update(mapa)
-        
     mapa.visualizar_mapa()
     i += 1
 
