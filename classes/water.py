@@ -10,6 +10,7 @@ class Water:
             self.positions = []
         self.energy = energy
 
+    # Esto hecho con IA
     def generate_water_patch(self, map):
         patch_size = random.randint(3, 10)
         start_x = random.randint(0, map.width - 1)
