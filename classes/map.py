@@ -19,7 +19,8 @@ class Map:
         self.fig, self.ax = plt.subplots()
 
         # Cargar imagen de fondo
-        self.agent_img = mpimg.imread("agente.jpg")
+        self.agent_img = mpimg.imread("images/agente.png")
+        self.food_img = mpimg.imread("images/food.png")
 
     def add_food(self, food=None):
         if food is None:
@@ -50,17 +51,23 @@ class Map:
 
     def visualizar_mapa(self):
         self.ax.clear()  # Limpiar el gráfico anterior
+
+        # Fijar límites del mapa y cuadrícula
         self.ax.set_xlim(0, self.width)
         self.ax.set_ylim(0, self.height)
         self.ax.set_xticks(range(self.width))
         self.ax.set_yticks(range(self.height))
         self.ax.grid(True)
 
+        self.ax.set_aspect('equal', adjustable='box')
+        self.fig.set_size_inches(self.width, self.height)
+        plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+
         # Dibujar agentes
         for agente in self.agents:
             if agente.pos is not None:
                 x, y = agente.pos
-                imagebox = OffsetImage(self.agent_img, zoom=0.1)  # Ajusta zoom para tamaño deseado
+                imagebox = OffsetImage(self.agent_img, zoom=0.05)
                 ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
                 self.ax.add_artist(ab)
 
@@ -68,17 +75,18 @@ class Map:
         for comida in self.food:
             if comida.pos is not None:
                 x, y = comida.pos
-                self.ax.plot(x + 0.5, y + 0.5, 'ro')
-        
-        # Dibujar agua
+                imagebox = OffsetImage(self.food_img, zoom=0.1)
+                ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
+                self.ax.add_artist(ab)
+
+        # Dibujar agua (como cuadrado azul grande en celda)
         for water in self.water:
             for pos in water.positions:
                 if pos is not None:
                     x, y = pos
-                    self.ax.plot(x + 0.5, y + 0.5, marker='s', color='blue', markersize=28, linestyle='')
+                    self.ax.plot(x + 0.5, y + 0.5, marker='s', color='blue', markersize=72, linestyle='')
 
-
-        self.ax.set_aspect('equal', adjustable='box')
+        # Dibujar y pausar
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
-        plt.pause(0.3)  # Pausa pequeña para que se vea el cambio
+        plt.pause(0.3)
