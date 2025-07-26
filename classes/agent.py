@@ -146,30 +146,47 @@ class Agent:
                 positions.append(pos)
         return positions
 
-    def move_towards(self, target_pos):
-        if self.pos is None:
+    def move_towards(self, target_pos, map=None):
+        if self.pos is None or target_pos is None:
             return
-        
+
         x, y = self.pos
         target_x, target_y = target_pos
 
+        new_x, new_y = x, y
         if x < target_x:
-            x += 1
+            new_x += 1
         elif x > target_x:
-            x -= 1
+            new_x -= 1
 
         if y < target_y:
-            y += 1
+            new_y += 1
         elif y > target_y:
-            y -= 1
+            new_y -= 1
 
-        self.pos = (x, y)
+        new_pos = (new_x, new_y)
+
+        if map:
+            water_positions = set()
+            for w in map.water:
+                water_positions.update(w.positions)
+            if new_pos in water_positions:
+                return  # No moverse al agua
+
+        self.pos = new_pos
     
     def random_position(self, map):
-        x = random.randint(0, map.width - 1)
-        y = random.randint(0, map.height - 1)
-        return (x, y)
-    
+        water_positions = set()
+        for w in map.water:
+            water_positions.update(w.positions)
+
+        while True:
+            x = random.randint(0, map.width - 1)
+            y = random.randint(0, map.height - 1)
+            pos = (x, y)
+            if pos not in water_positions:
+                return pos
+
     def select_sex(self):
         sexos = ["hombre", "mujer"]
         return random.choice(sexos)

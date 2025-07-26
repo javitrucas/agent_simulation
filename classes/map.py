@@ -89,4 +89,4 @@ class Map:
         # Dibujar y pausar
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
-        plt.pause(0.3)
+        plt.pause(0.1)

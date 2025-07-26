@@ -8,6 +8,15 @@ import random
 # Crear mapa
 mapa=Map(10, 10)
 
+# Crear y añadir agua
+rand_water=random.randint(1, 3)
+water=[]
+for _ in range(rand_water):
+    wat=Water(map=mapa)
+    water.append(wat)
+
+mapa.add_water(water)
+
 # Crear agente
 rand_ag=random.randint(1, 5)
 agente=[]
@@ -22,15 +31,7 @@ for _ in range(rand_comida):
     food=Food(map=mapa)
     comida.append(food)
 
-# Crear agua
-rand_water=random.randint(1, 3)
-water=[]
-for _ in range(rand_water):
-    wat=Water(map=mapa)
-    water.append(wat)
-
 # Añadir elementos al mapa
-mapa.add_water(water)
 mapa.add_agent(agente)
 mapa.add_food(comida)
 mapa.visualizar_mapa()
