@@ -3,7 +3,8 @@ from classes.food import Food
 from classes.agent import Agent
 from classes.water import Water
 import random
-
+import matplotlib.image as mpimg
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 class Map:
     def __init__(self, width, height):
@@ -16,7 +17,10 @@ class Map:
         # Activar modo interactivo y crear figura/ax
         plt.ion()
         self.fig, self.ax = plt.subplots()
-    
+
+        # Cargar imagen de fondo
+        self.agent_img = mpimg.imread("agente.jpg")
+
     def add_food(self, food=None):
         if food is None:
             return
@@ -56,7 +60,9 @@ class Map:
         for agente in self.agents:
             if agente.pos is not None:
                 x, y = agente.pos
-                self.ax.plot(x + 0.5, y + 0.5, 'bo')
+                imagebox = OffsetImage(self.agent_img, zoom=0.1)  # Ajusta zoom para tamaño deseado
+                ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
+                self.ax.add_artist(ab)
 
         # Dibujar comida
         for comida in self.food:

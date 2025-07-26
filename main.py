@@ -33,7 +33,7 @@ for _ in range(rand_water):
 mapa.add_water(water)
 mapa.add_agent(agente)
 mapa.add_food(comida)
-#mapa.visualizar_mapa()
+mapa.visualizar_mapa()
 
 # Mover agente
 i = 1

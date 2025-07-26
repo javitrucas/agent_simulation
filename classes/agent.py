@@ -130,10 +130,11 @@ class Agent:
         visible_positions = self.view()
         for pos in visible_positions:
             for water in map.water:
-                if water.pos == pos:
+                if pos in water.positions:
                     print(f"Agua encontrada en {pos}")
                     return pos
         return None
+
 
     def view(self):
         x, y = self.pos
