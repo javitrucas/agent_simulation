@@ -21,7 +21,7 @@ mapa.add_agent(agente)
 mapa.add_food(comida)
 #mapa.visualizar_mapa()
 
-# Mover agente aleatoriamente
+# Mover agente aleatoriamente y sacar información
 i=1
 for _ in range(20):  # Realizar movimientos aleatorios
     print(f"Iteración {i}")
@@ -38,6 +38,15 @@ for _ in range(20):  # Realizar movimientos aleatorios
 
 for idx, ag in enumerate(agente):
     print(f"Edad del agente {idx}: {ag.age}")
+
+# Borrar comida y agentes del mapa
+for food in mapa.food:
+    if food.pos is not None:
+        food.pos = None
+
+for agente in mapa.agents:
+    if agente.pos is not None:
+        agente.pos = None
 
 # Mostrar historial de posiciones de cada agente
 for idx, ag in enumerate(agente):
