@@ -23,16 +23,16 @@ for _ in range(rand_comida):
     comida.append(food)
 
 # Crear agua
-rand_water=random.randint(2, 5)
+rand_water=random.randint(1, 3)
 water=[]
 for _ in range(rand_water):
     wat=Water(map=mapa)
     water.append(wat)
 
-# Añadir agente al mapa
+# Añadir elementos al mapa
+mapa.add_water(water)
 mapa.add_agent(agente)
 mapa.add_food(comida)
-mapa.add_water(water)
 #mapa.visualizar_mapa()
 
 # Mover agente

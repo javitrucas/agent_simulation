@@ -25,7 +25,9 @@ class Agent:
         random.shuffle(movimientos)  # Para probar primero direcciones aleatorias
 
         # Crear conjunto de posiciones con agua
-        water_positions = {w.pos for w in map.water if w.pos is not None}
+        water_positions = set()
+        for w in map.water:
+            water_positions.update(w.positions)
 
         for direccion in movimientos:
             nueva_pos = direccion(self)
@@ -95,17 +97,18 @@ class Agent:
     def drink(self, water):
         x, y = self.pos
         drinkable_area = [
-            (x, y),            # Centro
-            (x + 1, y),        # Derecha
-            (x - 1, y),        # Izquierda
-            (x, y + 1),        # Abajo
-            (x, y - 1)         # Arriba
+            (x, y),
+            (x + 1, y),
+            (x - 1, y),
+            (x, y + 1),
+            (x, y - 1)
         ]
 
-        if water.pos in drinkable_area:
-            print(f"Agente bebe agua en {water.pos}")
-            self.thirst += water.energy
-            return True
+        for pos in drinkable_area:
+            if pos in water.positions:
+                self.thirst += water.energy
+                print(f"Agente bebe agua en {pos}")
+                return True
         return False
 
     def is_hungry(self):

@@ -66,9 +66,11 @@ class Map:
         
         # Dibujar agua
         for water in self.water:
-            if water.pos is not None:
-                x, y = water.pos
-                self.ax.plot(x + 0.5, y + 0.5, marker='s', color='blue', markersize=12, linestyle='')
+            for pos in water.positions:
+                if pos is not None:
+                    x, y = pos
+                    self.ax.plot(x + 0.5, y + 0.5, marker='s', color='blue', markersize=12, linestyle='')
+
 
         self.ax.set_aspect('equal', adjustable='box')
         self.fig.canvas.draw()
