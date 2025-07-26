@@ -1,0 +1,28 @@
+AGENTE/ATRIBUTOS BÁSICOS
+	-pos
+	-energy
+	-velocity
+	-history
+	-hunger_threshold
+
+AGENTE/FUNCIONES BÁSICAS
+	-move
+	-eat
+	-update_state
+	-view
+	-is_hungry
+	-search_for_food
+
+------------------------------------------
+
+COMIDA/ATRIBUTOS BÁSICOS
+	-pos
+	-energy
+	
+COMIDA/FUNCIONES BÁSICAS
+	-update_state
+
+------------------------------------------
+
+MAPA
+	-DISTINTAS CASILLAS
