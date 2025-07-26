@@ -20,6 +20,7 @@ class Map:
 
         # Cargar imagen de fondo
         self.agent_img = mpimg.imread("images/agente.png")
+        self.agent_img_fem = mpimg.imread("images/agenta.png")
         self.food_img = mpimg.imread("images/food.png")
 
     def add_food(self, food=None):
@@ -67,7 +68,10 @@ class Map:
         for agente in self.agents:
             if agente.pos is not None:
                 x, y = agente.pos
-                imagebox = OffsetImage(self.agent_img, zoom=0.05)
+                if agente.sex == "hombre":
+                    imagebox = OffsetImage(self.agent_img, zoom=0.05)
+                elif agente.sex == "mujer":
+                    imagebox = OffsetImage(self.agent_img_fem, zoom=0.05)
                 ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
                 self.ax.add_artist(ab)
 
