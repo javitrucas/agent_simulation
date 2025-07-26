@@ -84,7 +84,7 @@ class Agent:
         start_x, start_y = x - 2, y + 2
         for i in range(5):
             for j in range(5):
-                pos = (start_x + i, start_y + j)
+                pos = (start_x + i, start_y - j)
                 positions.append(pos)
         return positions
 

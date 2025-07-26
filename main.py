@@ -12,8 +12,8 @@ ag2=Agent(energy=8, map=mapa)
 agente=[ag, ag2]
 
 # Crear comida
-c=Food(pos=(2, 3))
-c2=Food(pos=(7, 3), energy=10)
+c=Food(map=mapa)
+c2=Food(map=mapa)
 comida=[c, c2]
 
 # Añadir agente al mapa
@@ -58,4 +58,4 @@ for ag in agente:
 plt.imshow(heatmap, cmap='hot', interpolation='nearest', extent=[0, mapa.width, 0, mapa.height])
 plt.colorbar()
 plt.gca().invert_yaxis()
-plt.show(block=True)
+# plt.show(block=True)
