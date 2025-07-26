@@ -3,18 +3,18 @@ from classes.food import Food
 from classes.map import Map
 import matplotlib.pyplot as plt
 
+# Crear mapa
+mapa=Map(10, 10)
+
 # Crear agente
-ag=Agent(pos=(2, 0))
-ag2=Agent(pos=(7, 5), energy=8)
+ag=Agent(map=mapa)
+ag2=Agent(energy=8, map=mapa)
 agente=[ag, ag2]
 
 # Crear comida
 c=Food(pos=(2, 3))
 c2=Food(pos=(7, 3), energy=10)
 comida=[c, c2]
-
-# Crear mapa
-mapa=Map(10, 10)
 
 # Añadir agente al mapa
 mapa.add_agent(agente)

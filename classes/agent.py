@@ -1,8 +1,11 @@
 import random
 
 class Agent:
-    def __init__(self, pos, energy=10, velocity=1, history=None, hunger_threshold=10, age=1):
-        self.pos = pos
+    def __init__(self, pos=None, energy=10, velocity=1, history=None, hunger_threshold=10, age=1, map=None):
+        if pos is None:
+            self.pos = self.random_position(map)
+        else:
+            self.pos = pos
         self.energy = energy
         self.velocity = velocity
         self.history = []
@@ -25,6 +28,9 @@ class Agent:
                 break  # Se mueve solo a la primera posición válida
 
     def smart_move(self, map):
+        if self.energy <= 0 or self.pos is None:
+            return
+
         if self.is_hungry():
             ideal_pos = self.search_for_food(map)
             if ideal_pos is not None:
@@ -51,10 +57,8 @@ class Agent:
         
         if self.energy > 0 and self.pos is not None:
             self.age+=1
-
-
-        # Guarda la posición actual en el historial
-        self.history.append(self.pos)
+            # Guarda la posición actual en el historial
+            self.history.append(self.pos)
 
     def eat(self, food):
         if food.pos == self.pos:
@@ -102,9 +106,12 @@ class Agent:
             y -= 1
 
         self.pos = (x, y)
+    
+    def random_position(self, map):
+        x = random.randint(0, map.width - 1)
+        y = random.randint(0, map.height - 1)
+        return (x, y)
                 
-                
-
 # Fuera de la clase Agent
 def stay(agente):
     return agente.pos
