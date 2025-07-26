@@ -1,7 +1,8 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=10, thirst=20, velocity=1, history=None, hunger_threshold=7, thirst_threshold=10, age=1, map=None, sex=None, life_span=None):
+    def __init__(self, pos=None, energy=10, thirst=15, velocity=1, history=None, hunger_threshold=7, thirst_threshold=12, 
+                 age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0):
         if pos is None:
             self.pos = self.random_position(map)
         else:
@@ -15,6 +16,8 @@ class Agent:
         self.age = age
         self.sex=self.select_sex()
         self.life_span = self.life_span()
+        self.times_eaten = times_eaten
+        self.times_drunk = times_drunk
 
     def random_move(self, map):
         if self.energy <= 0 or self.pos is None:
@@ -91,6 +94,7 @@ class Agent:
     def eat(self, food):
         if food.pos == self.pos:
             self.energy += food.energy
+            self.times_eaten+=1
             return True
         return False
     
@@ -107,6 +111,7 @@ class Agent:
         for pos in drinkable_area:
             if pos in water.positions:
                 self.thirst += water.energy
+                self.times_drunk+=1
                 print(f"Agente bebe agua en {pos}")
                 return True
         return False
