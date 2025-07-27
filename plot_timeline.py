@@ -4,10 +4,7 @@ import matplotlib.cm as cm
 import numpy as np
 import os
 
-def plot_timeline_limpia(run_id=1):
-    """
-    Gráfica limpia y moderna con etiquetas de muerte
-    """
+def plot_timeline(run_id=1):
     filename = f"output/runs/run_{run_id}_timeline.csv"
     df = pd.read_csv(filename)
     
@@ -126,4 +123,5 @@ def plot_timeline_limpia(run_id=1):
     plt.show()
 
 if __name__ == "__main__":
-    plot_timeline_limpia(run_id=1)
+    for run_id in range(1, 11):
+        plot_timeline(run_id)

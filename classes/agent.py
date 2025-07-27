@@ -95,7 +95,7 @@ class Agent:
         if self.is_dead():
             print("El agente se ha quedado sin energía o agua y MUERE.")
             self.pos = None
-            self.age = -1  # Marca la edad como -1 para indicar que está muerto
+            #self.age = -1  # Marca la edad como -1 para indicar que está muerto
 
         # Actualiza la edad y el historial de posiciones
         if self.is_dead() == False:
