@@ -126,4 +126,4 @@ def plot_timeline_limpia(run_id=1):
     plt.show()
 
 if __name__ == "__main__":
-    plot_timeline_limpia(run_id=10)
+    plot_timeline_limpia(run_id=1)

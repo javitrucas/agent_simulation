@@ -1,46 +1,109 @@
 Iteración,Agente,Posición,Energía,Sed,Edad,Tiene Hambre,Tiene Sed,Ha Comido,Ha Bebido,Muerto,Causa de Muerte
-1,0,"(3, 5)",8,15,1,False,False,False,False,False,
-1,1,"(9, 0)",11,15,1,False,False,False,False,False,
-1,2,"(7, 2)",10,15,1,False,False,False,False,False,
-2,0,"(3, 4)",7,14,2,True,False,False,False,False,
-2,1,"(9, 1)",10,14,2,False,False,False,False,False,
-2,2,"(8, 2)",9,14,2,False,False,False,False,False,
-3,0,"(3, 3)",6,13,3,True,False,True,False,False,
-3,1,"(8, 1)",9,13,3,False,False,False,False,False,
-3,2,"(8, 1)",8,13,3,False,False,False,False,False,
-4,0,"(3, 2)",10,12,4,False,True,True,False,False,
-4,1,"(7, 1)",8,12,4,False,True,False,False,False,
-4,2,"(8, 2)",7,12,4,True,True,False,False,False,
-5,0,"(2, 2)",9,11,5,False,True,True,False,False,
-5,1,"(7, 2)",7,11,5,True,True,False,False,False,
-5,2,"(7, 3)",6,11,5,True,True,True,False,False,
-6,0,"(2, 2)",8,10,6,False,True,True,False,False,
-6,1,"(6, 3)",6,10,6,True,True,True,False,False,
-6,2,"(6, 4)",10,10,6,False,True,True,False,False,
-7,0,"(2, 1)",7,9,7,True,True,True,False,False,
-7,1,"(6, 2)",10,9,7,False,True,True,False,False,
-7,2,"(7, 4)",9,9,7,False,True,True,False,False,
-8,0,"(1, 1)",6,8,8,True,True,True,False,False,
-8,1,"(6, 1)",9,8,8,False,True,True,False,False,
-8,2,"(6, 4)",8,8,8,False,True,True,False,False,
-9,0,"(2, 1)",5,7,9,True,True,True,False,False,
-9,1,"(5, 1)",8,7,9,False,True,True,False,False,
-9,2,"(5, 4)",7,7,9,True,True,True,False,False,
-10,0,"(2, 1)",4,6,10,True,True,True,False,False,
-10,1,"(4, 1)",7,6,10,True,True,True,False,False,
-10,2,"(4, 4)",6,6,10,True,True,True,False,False,
-11,0,"(3, 1)",3,5,11,True,True,True,False,False,
-11,1,"(4, 0)",6,5,11,True,True,True,False,False,
-11,2,"(4, 5)",5,5,11,True,True,True,False,False,
-12,0,"(3, 2)",2,4,12,True,True,True,False,False,
-12,1,"(5, 0)",5,4,12,True,True,True,False,False,
-12,2,"(3, 5)",4,4,12,True,True,True,False,False,
-13,0,"(4, 2)",1,3,13,True,True,True,False,True,Energía
-13,1,"(6, 0)",4,3,13,True,True,True,False,False,
-13,2,"(3, 5)",3,3,13,True,True,True,False,False,
-14,0,,0,2,-1,True,True,False,False,True,Energía
-14,1,"(5, 0)",3,2,14,True,True,True,False,False,
-14,2,"(2, 5)",2,2,14,True,True,True,False,False,
-15,0,,0,2,-1,True,True,False,False,True,Energía
-15,1,"(6, 0)",2,1,15,True,True,True,False,True,Sed
-15,2,"(1, 4)",1,1,15,True,True,True,False,True,Sed
+1,0,"(2, 3)",9,15,1,False,False,False,False,False,
+1,1,"(9, 5)",11,15,1,False,False,False,False,False,
+1,2,"(7, 2)",12,15,1,False,False,False,False,False,
+1,3,"(5, 4)",9,15,1,False,False,False,False,False,
+2,0,"(2, 4)",8,14,2,False,False,False,False,False,
+2,1,"(9, 5)",10,14,2,False,False,False,False,False,
+2,2,"(7, 2)",11,14,2,False,False,False,False,False,
+2,3,"(5, 3)",8,14,2,False,False,False,False,False,
+3,0,"(2, 5)",7,13,3,True,False,True,False,False,
+3,1,"(9, 5)",9,13,3,False,False,False,False,False,
+3,2,"(7, 2)",10,13,3,False,False,False,False,False,
+3,3,"(5, 3)",7,13,3,True,False,False,False,False,
+4,0,"(1, 5)",11,12,4,False,True,True,True,False,
+4,1,"(9, 6)",8,12,4,False,True,False,False,False,
+4,2,"(7, 2)",9,12,4,False,True,False,True,False,
+4,3,"(6, 4)",6,12,4,True,True,True,False,False,
+5,0,"(0, 6)",10,21,5,False,False,True,True,False,
+5,1,"(8, 6)",7,11,5,True,True,False,False,False,
+5,2,"(6, 2)",8,21,5,False,False,False,True,False,
+5,3,"(7, 4)",10,11,5,False,True,True,True,False,
+6,0,"(0, 5)",9,20,6,False,False,True,True,False,
+6,1,"(9, 7)",6,10,6,True,True,False,False,False,
+6,2,"(7, 2)",7,20,6,True,False,True,True,False,
+6,3,"(6, 3)",9,20,6,False,False,True,True,False,
+7,0,"(1, 5)",8,19,7,False,False,True,True,False,
+7,1,"(8, 8)",5,9,7,True,True,True,False,False,
+7,2,"(8, 3)",11,19,7,False,False,True,True,False,
+7,3,"(6, 4)",8,19,7,False,False,True,True,False,
+8,0,"(0, 5)",7,18,8,True,False,True,True,False,
+8,1,"(8, 9)",9,8,8,False,True,True,False,False,
+8,2,"(8, 2)",10,18,8,False,False,True,True,False,
+8,3,"(6, 5)",7,18,8,True,False,True,True,False,
+9,0,"(0, 5)",6,17,9,True,False,True,True,False,
+9,1,"(8, 9)",8,7,9,False,True,True,False,False,
+9,2,"(8, 2)",9,17,9,False,False,True,True,False,
+9,3,"(7, 5)",6,17,9,True,False,True,True,False,
+10,0,"(0, 4)",5,16,10,True,False,True,True,False,
+10,1,"(7, 9)",7,6,10,True,True,True,False,False,
+10,2,"(8, 3)",8,16,10,False,False,True,True,False,
+10,3,"(8, 5)",5,16,10,True,False,True,True,False,
+11,0,"(1, 4)",4,15,11,True,False,True,True,False,
+11,1,"(8, 8)",6,5,11,True,True,True,False,False,
+11,2,"(8, 3)",7,15,11,True,False,True,True,False,
+11,3,"(8, 5)",4,15,11,True,False,True,True,False,
+12,0,"(1, 5)",3,14,12,True,False,True,True,False,
+12,1,"(9, 8)",10,4,12,False,True,True,False,False,
+12,2,"(9, 2)",11,14,12,False,False,True,True,False,
+12,3,"(8, 4)",3,14,12,True,False,True,True,False,
+13,0,"(2, 6)",2,13,13,True,False,True,True,False,
+13,1,"(9, 7)",9,3,13,False,True,True,False,False,
+13,2,"(9, 1)",10,13,13,False,False,True,True,False,
+13,3,"(7, 4)",2,13,13,True,False,True,True,False,
+14,0,"(3, 7)",6,12,14,True,True,True,True,False,
+14,1,"(9, 8)",8,2,14,False,True,True,False,False,
+14,2,"(9, 1)",9,12,14,False,True,True,True,False,
+14,3,"(6, 4)",1,12,14,True,True,True,True,True,Energía
+15,0,"(2, 8)",5,21,15,True,False,True,True,False,
+15,1,"(9, 7)",7,1,15,True,True,True,False,True,Sed
+15,2,"(8, 1)",8,21,15,False,False,True,True,False,
+15,3,,0,21,-1,True,False,False,False,True,Energía
+16,0,"(2, 9)",9,20,16,False,False,True,True,False,
+16,1,,6,0,-1,True,True,False,False,True,Sed
+16,2,"(8, 2)",7,20,16,True,False,True,True,False,
+16,3,,0,21,-1,True,False,False,False,True,Energía
+17,0,"(3, 9)",8,19,17,False,False,True,True,False,
+17,1,,6,0,-1,True,True,False,False,True,Sed
+17,2,"(8, 1)",6,19,17,True,False,True,True,False,
+17,3,,0,21,-1,True,False,False,False,True,Energía
+18,0,"(4, 9)",7,18,18,True,False,True,True,False,
+18,1,,6,0,-1,True,True,False,False,True,Sed
+18,2,"(8, 0)",10,18,18,False,False,True,True,False,
+18,3,,0,21,-1,True,False,False,False,True,Energía
+19,0,"(5, 9)",6,17,19,True,False,True,True,False,
+19,1,,6,0,-1,True,True,False,False,True,Sed
+19,2,"(9, 0)",9,17,19,False,False,True,True,False,
+19,3,,0,21,-1,True,False,False,False,True,Energía
+20,0,"(5, 9)",5,16,20,True,False,True,True,False,
+20,1,,6,0,-1,True,True,False,False,True,Sed
+20,2,"(9, 0)",8,16,20,False,False,True,True,False,
+20,3,,0,21,-1,True,False,False,False,True,Energía
+21,0,"(5, 8)",4,15,21,True,False,True,True,False,
+21,1,,6,0,-1,True,True,False,False,True,Sed
+21,2,"(9, 0)",7,15,21,True,False,True,True,False,
+21,3,,0,21,-1,True,False,False,False,True,Energía
+22,0,"(4, 8)",3,14,22,True,False,True,True,False,
+22,1,,6,0,-1,True,True,False,False,True,Sed
+22,2,"(9, 0)",6,14,22,True,False,True,True,False,
+22,3,,0,21,-1,True,False,False,False,True,Energía
+23,0,"(4, 8)",2,13,23,True,False,True,True,False,
+23,1,,6,0,-1,True,True,False,False,True,Sed
+23,2,"(9, 0)",5,13,23,True,False,True,True,False,
+23,3,,0,21,-1,True,False,False,False,True,Energía
+24,0,"(4, 9)",1,12,24,True,True,True,True,True,Energía
+24,1,,6,0,-1,True,True,False,False,True,Sed
+24,2,"(9, 1)",4,12,24,True,True,True,True,False,
+24,3,,0,21,-1,True,False,False,False,True,Energía
+25,0,,0,11,-1,True,True,False,False,True,Energía
+25,1,,6,0,-1,True,True,False,False,True,Sed
+25,2,"(9, 0)",3,11,25,True,True,True,True,False,
+25,3,,0,21,-1,True,False,False,False,True,Energía
+26,0,,0,11,-1,True,True,False,False,True,Energía
+26,1,,6,0,-1,True,True,False,False,True,Sed
+26,2,"(9, 1)",2,20,26,True,False,True,True,False,
+26,3,,0,21,-1,True,False,False,False,True,Energía
+27,0,,0,11,-1,True,True,False,False,True,Energía
+27,1,,6,0,-1,True,True,False,False,True,Sed
+27,2,"(9, 2)",1,19,27,True,False,True,True,True,Energía
+27,3,,0,21,-1,True,False,False,False,True,Energía
