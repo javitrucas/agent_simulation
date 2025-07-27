@@ -20,8 +20,8 @@ class Agent:
         self.times_drunk = times_drunk
 
     def random_move(self, map):
-        if self.energy <= 0 or self.pos is None:
-            print("El agente no puede moverse porque se ha quedado sin energía.")
+        if self.is_dead():
+            print("El agente no puede moverse porque se ha muerto.")
             return
 
         movimientos = [norte, sur, este, oeste, stay]
@@ -48,7 +48,7 @@ class Agent:
                 break  # Solo se mueve a la primera posición válida sin agua
 
     def smart_move(self, map):
-        if self.energy <= 0 or self.pos is None:
+        if self.is_dead():
             return
 
         if self.is_hungry():
@@ -63,7 +63,7 @@ class Agent:
                 self.move_towards(ideal_pos)
             else:
                 self.random_move(map)
-        elif self.energy > 0 and self.thirst > 0:
+        elif self.is_dead() == False:
             self.random_move(map)
 
     def update(self, map):
@@ -85,14 +85,12 @@ class Agent:
         self.thirst -= 1
 
         # Verifica si el agente ha muerto
-        if self.energy <= 0 or self.thirst <= 0 or self.age > self.life_span:
-            self.energy = 0
-            self.thirst = 0
+        if self.is_dead():
             print("El agente se ha quedado sin energía o agua y MUERE.")
             self.pos = None
 
         # Actualiza la edad y el historial de posiciones
-        if self.energy > 0 and self.pos is not None:
+        if self.is_dead() == False:
             self.age += 1
             self.history.append(self.pos)
 
@@ -219,6 +217,9 @@ class Agent:
             return "Sed"
         else:
             return "Desconocido"
+        
+    def is_dead(self):
+        return self.energy <= 0 or self.thirst <= 0 or self.age > self.life_span
                 
 # Fuera de la clase Agent
 def stay(agente):
