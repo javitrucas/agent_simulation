@@ -18,7 +18,7 @@ for _ in range(rand_water):
 mapa.add_water(water)
 
 # Crear agente
-rand_ag=random.randint(1, 5)
+rand_ag=random.randint(3, 5)
 agente=[]
 for _ in range(rand_ag):
     ag=Agent(energy=random.randint(7, 12), map=mapa)
@@ -40,6 +40,15 @@ mapa.visualizar_mapa()
 i = 1
 while any(ag.energy > 0 and ag.pos is not None for ag in agente):
     print(f"\nIteración {i}")
+
+    if random.randint(1, 10) == 1: 
+        rand_comida=random.randint(1, 3)
+        comida=[]
+        for _ in range(rand_comida):
+            food=Food(map=mapa)
+            comida.append(food)
+            mapa.add_food(comida)
+
     for idx, ag in enumerate(agente):
         if ag.energy > 0 and ag.pos is not None:
             print(f"Posición del agente {idx}: {ag.pos}")
