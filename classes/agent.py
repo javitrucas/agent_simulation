@@ -18,6 +18,8 @@ class Agent:
         self.life_span = self.life_span()
         self.times_eaten = times_eaten
         self.times_drunk = times_drunk
+        self.just_ate = False
+        self.just_drank = False
 
     def random_move(self, map):
         if self.is_dead():
@@ -67,10 +69,14 @@ class Agent:
             self.random_move(map)
 
     def update(self, map):
+        just_ate = False
+        just_drank = False
+
         # Intenta comer cualquier comida que esté en la posición actual
         if self.is_hungry(): 
             for food in map.food:
                 if self.eat(food):
+                    self.just_ate = True
                     food.eaten()  # Marca la comida como comida o elimínala del mapa
                     break
 
@@ -78,6 +84,7 @@ class Agent:
         if self.is_thirsty():
             for water in map.water:
                 if self.drink(water):
+                    self.just_drank = True
                     break  # Solo bebe una vez por turno
 
         # Reduce energía y sed al actualizar
