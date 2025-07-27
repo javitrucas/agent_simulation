@@ -31,6 +31,12 @@ class Agent:
         water_positions = set()
         for w in map.water:
             water_positions.update(w.positions)
+        
+        # Crear conjunto de posiciones ocupadas por otros agentes
+        occupied_positions = set()
+        for agent in map.agents:
+            if agent is not self and agent.pos is not None:
+                occupied_positions.add(agent.pos)
 
         for direccion in movimientos:
             nueva_pos = direccion(self)
@@ -140,7 +146,6 @@ class Agent:
                     return pos
         return None
 
-
     def view(self):
         x, y = self.pos
         positions = []
@@ -177,6 +182,12 @@ class Agent:
                 water_positions.update(w.positions)
             if new_pos in water_positions:
                 return  # No moverse al agua
+        
+        if map:
+            # Verificar si hay otro agente en la nueva posición
+            for agent in map.agents:
+                if agent is not self and agent.pos == new_pos:
+                    return
 
         self.pos = new_pos
     
