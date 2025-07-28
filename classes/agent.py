@@ -1,7 +1,7 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=6, thirst_threshold=10, 
+    def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=10, thirst_threshold=10, 
                  age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0, reproduce_threshold=5, reproduction_cooldown=0):
         # Posición Inicial
         if pos is None:

@@ -6,8 +6,11 @@ from classes.food import Food
 from classes.map import Map
 from classes.water import Water
 
+MAX_AGENTES = 10 # Controlar población máxima
+
+
 def run_simulation(run_id=1, visualize=False):
-    mapa = Map(6, 6)
+    mapa = Map(12, 12)
 
     # Añadir agua
     rand_water = random.randint(1, 3)
@@ -15,8 +18,8 @@ def run_simulation(run_id=1, visualize=False):
     mapa.add_water(water)
 
     # Crear agentes
-    rand_ag = random.randint(4, 6)
-    agentes = [Agent(energy=random.randint(15, 25), map=mapa) for _ in range(rand_ag)]
+    rand_ag = random.randint(2, 6)
+    agentes = [Agent(energy=random.randint(20, 30), map=mapa, thirst=random.randint(20, 30)) for _ in range(rand_ag)]
 
     # Crear comida
     rand_comida = random.randint(2, 8)
@@ -30,6 +33,7 @@ def run_simulation(run_id=1, visualize=False):
     iteracion = 1
 
     while any(ag.energy > 0 and ag.pos is not None for ag in agentes):
+        # agentes = [ag for ag in agentes if not ag.is_dead()]
         if random.randint(1, 10) == 1:
             nuevas_comidas = [Food(map=mapa) for _ in range(random.randint(1, 3))]
             mapa.add_food(nuevas_comidas)
@@ -55,7 +59,7 @@ def run_simulation(run_id=1, visualize=False):
                 ag.smart_move(mapa)
                 ag.update(mapa)
                 for nuevo_agente in mapa.agents:
-                    if nuevo_agente not in agentes:
+                    if nuevo_agente not in agentes and len(agentes) < MAX_AGENTES:
                         agentes.append(nuevo_agente)
 
                 estado["Ha Comido"] = ag.just_ate
