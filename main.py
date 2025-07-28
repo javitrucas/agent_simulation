@@ -15,7 +15,7 @@ def run_simulation(run_id=1, visualize=False):
     mapa.add_water(water)
 
     # Crear agentes
-    rand_ag = random.randint(2, 4)
+    rand_ag = random.randint(4, 6)
     agentes = [Agent(energy=random.randint(15, 25), map=mapa) for _ in range(rand_ag)]
 
     # Crear comida

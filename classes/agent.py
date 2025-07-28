@@ -2,7 +2,7 @@ import random
 
 class Agent:
     def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=6, thirst_threshold=10, 
-                 age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0):
+                 age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0, reproduce_threshold=5, reproduction_cooldown=0):
         # Posición Inicial
         if pos is None:
             self.pos = self.random_position(map)
@@ -16,10 +16,12 @@ class Agent:
         self.energy = energy
         self.thirst = thirst
         self.age = age
-        self.sex=self.select_sex()
-        self.life_span = self.life_span()
+        self.sex = sex if sex else self.select_sex()
+        self.life_span = life_span if life_span else self.lifespan()
         self.hunger_threshold = hunger_threshold
         self.thirst_threshold = thirst_threshold
+        self.reproduce_threshold = reproduce_threshold
+        self.reproduction_cooldown = reproduction_cooldown
         
         # Historial de acciones
         self.history = []
@@ -175,13 +177,16 @@ class Agent:
                     self.just_drank = True
                     break  # Solo bebe una vez por turno
 
+        # Actualiza el cooldown de reproducción
+        if self.reproduction_cooldown > 0:
+            self.reproduction_cooldown -= 1
+
         # Intentar reproducirse si hay pareja cerca
         if not self.is_dead() and not self.is_hungry() and not self.is_thirsty():
             for agent in map.agents:
                 if agent is not self and self.can_reproduce_with(agent):
                     self.reproduce(agent)
                     break
-
 
         # Reduce energía y sed al actualizar
         self.energy -= 1
@@ -227,19 +232,22 @@ class Agent:
     def can_reproduce_with(self, other):
         return (
             self.sex != other.sex and
-            self.age >= 5 and other.age >= 5 and
+            self.age >= self.reproduce_threshold and other.age >= other.reproduce_threshold and
             not self.is_hungry() and not self.is_thirsty() and
             not other.is_hungry() and not other.is_thirsty() and
             abs(self.pos[0] - other.pos[0]) <= 1 and
-            abs(self.pos[1] - other.pos[1]) <= 1
+            abs(self.pos[1] - other.pos[1]) <= 1 and 
+            self.reproduction_cooldown <= 0 and other.reproduction_cooldown <= 0
         )
 
     
     def reproduce(self, partner):
-        if self.can_reproduce_with(partner):
+        if self.can_reproduce_with(partner) and self.sex == "mujer":
             child = Agent(pos=self.pos, map=self.map)
             self.map.agents.append(child)
-            print(f"AAAAAAAAAAAAAAAAAAAAAAAgente {self} se reproduce con {partner} y crea un hijo {child}")
+            print(f"AAAAAAAAAAAAAAAAAaaAgente {self} se reproduce con {partner} y crea un hijo {child}")
+            self.reproduction_cooldown = 3
+            partner.reproduction_cooldown = 3
             return child
         return None
 
@@ -270,7 +278,7 @@ class Agent:
         sexos = ["hombre", "mujer"]
         return random.choice(sexos)
     
-    def life_span(self):
+    def lifespan(self):
         return random.randint(40, 100)
     
     def couse_death(self):
