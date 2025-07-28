@@ -68,12 +68,17 @@ class Map:
         for agente in self.agents:
             if agente.pos is not None:
                 x, y = agente.pos
-                if agente.sex == "hombre":
-                    imagebox = OffsetImage(self.agent_img, zoom=0.05)
-                elif agente.sex == "mujer":
-                    imagebox = OffsetImage(self.agent_img_fem, zoom=0.05)
-                ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
-                self.ax.add_artist(ab)
+                if agente.age < 5:
+                    self.ax.plot(x + 0.5, y + 0.5, marker='o', color='pink', markersize=20, linestyle='')
+                else:
+                    if agente.sex == "hombre":
+                        imagebox = OffsetImage(self.agent_img, zoom=0.05)
+                    elif agente.sex == "mujer":
+                        imagebox = OffsetImage(self.agent_img_fem, zoom=0.05)
+                    else:
+                        continue  # Skip if sex is not recognized
+                    ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
+                    self.ax.add_artist(ab)
 
         # Dibujar comida
         for comida in self.food:
@@ -83,7 +88,7 @@ class Map:
                 ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
                 self.ax.add_artist(ab)
 
-        # Dibujar agua (como cuadrado azul grande en celda)
+        # Dibujar agua
         for water in self.water:
             for pos in water.positions:
                 if pos is not None:

@@ -245,7 +245,7 @@ class Agent:
         if self.can_reproduce_with(partner) and self.sex == "mujer":
             child = Agent(pos=self.pos, map=self.map)
             self.map.agents.append(child)
-            print(f"AAAAAAAAAAAAAAAAAaaAgente {self} se reproduce con {partner} y crea un hijo {child}")
+            print(f"NACIMIENTO de un nuevo agente en {self.pos}, sexo {child.sex}")
             self.reproduction_cooldown = 3
             partner.reproduction_cooldown = 3
             return child
