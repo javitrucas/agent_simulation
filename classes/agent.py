@@ -9,6 +9,9 @@ class Agent:
         else:
             self.pos = pos
         
+        # Mapa del Agente
+        self.map = map
+        
         # Atributos del Agente
         self.energy = energy
         self.thirst = thirst
@@ -70,10 +73,10 @@ class Agent:
                 self.move_towards(ideal_pos)
             else:
                 self.random_move(map)
-        elif self.is_hungry() == False and self.is_thirsty() == False:
-            ideal_pos = self.search_for_partner(map)
-            if ideal_pos is not None:
-                self.move_towards(ideal_pos)
+        elif not self.is_hungry() and not self.is_thirsty():
+            partner = self.search_for_partner(map)
+            if partner is not None:
+                self.move_towards(partner.pos, map)
             else:
                 self.random_move(map)
         elif self.is_dead() == False:
@@ -137,8 +140,9 @@ class Agent:
         for pos in visible_positions:
             for agent in map.agents:
                 if agent is not self and agent.pos == pos:
-                    print(f"Pareja encontrada en {pos}")
-                    return agent
+                    if self.can_reproduce_with(agent):
+                        print(f"Pareja compatible encontrada en {pos}")
+                        return agent 
         return None
 
     def view(self):
@@ -212,19 +216,21 @@ class Agent:
                 return True
         return False
     
+    def can_reproduce_with(self, other):
+        return (
+            self.sex != other.sex and
+            self.age >= 5 and other.age >= 5 and
+            not self.is_hungry() and not self.is_thirsty() and
+            not other.is_hungry() and not other.is_thirsty()
+        )
+    
     def reproduce(self, partner):
-        if self.is_dead() == None or partner.is_dead() == None:
-            if self.sex != partner:
-                if self.age >= 5 and partner.age >= 5:
-                    if (self.is_hungry() == None or self.is_thirsty() == None) and (partner.is_hungry() == None or partner.is_thirsty() == None):
-                            if self.pos == partner.pos:
-                                hijo= Agent(
-                                    pos=self.pos,
-                                    map=self.map)
-                                self.map.agents.append(hijo)
-                                print(f"Agente {self} se reproduce con {partner} y crea un hijo {hijo}")
-        else:
-            return None
+        if self.pos == partner.pos and self.can_reproduce_with(partner):
+            child = Agent(pos=self.pos, map=self.map)
+            self.map.agents.append(child)
+            print(f"Agente {self} se reproduce con {partner} y crea un hijo {child}")
+            return child
+        return None
 
     # Métodos de consulta del Agente
     def is_hungry(self):
