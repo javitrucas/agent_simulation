@@ -1,7 +1,7 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=10, thirst=15, history=None, hunger_threshold=7, thirst_threshold=12, 
+    def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=6, thirst_threshold=10, 
                  age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0):
         # Posición Inicial
         if pos is None:
@@ -73,7 +73,7 @@ class Agent:
                 self.move_towards(ideal_pos)
             else:
                 self.random_move(map)
-        elif not self.is_hungry() and not self.is_thirsty():
+        elif not self.is_hungry() and not self.is_thirsty() and self.sex=="hombre":
             partner = self.search_for_partner(map)
             if partner is not None:
                 self.move_towards(partner.pos, map)
@@ -110,10 +110,10 @@ class Agent:
                 return  # No moverse al agua
         
         if map:
-            # Verificar si hay otro agente en la nueva posición
             for agent in map.agents:
                 if agent is not self and agent.pos == new_pos:
-                    return
+                        return 
+
 
         self.pos = new_pos
 
@@ -175,6 +175,14 @@ class Agent:
                     self.just_drank = True
                     break  # Solo bebe una vez por turno
 
+        # Intentar reproducirse si hay pareja cerca
+        if not self.is_dead() and not self.is_hungry() and not self.is_thirsty():
+            for agent in map.agents:
+                if agent is not self and self.can_reproduce_with(agent):
+                    self.reproduce(agent)
+                    break
+
+
         # Reduce energía y sed al actualizar
         self.energy -= 1
         self.thirst -= 1
@@ -221,14 +229,17 @@ class Agent:
             self.sex != other.sex and
             self.age >= 5 and other.age >= 5 and
             not self.is_hungry() and not self.is_thirsty() and
-            not other.is_hungry() and not other.is_thirsty()
+            not other.is_hungry() and not other.is_thirsty() and
+            abs(self.pos[0] - other.pos[0]) <= 1 and
+            abs(self.pos[1] - other.pos[1]) <= 1
         )
+
     
     def reproduce(self, partner):
-        if self.pos == partner.pos and self.can_reproduce_with(partner):
+        if self.can_reproduce_with(partner):
             child = Agent(pos=self.pos, map=self.map)
             self.map.agents.append(child)
-            print(f"Agente {self} se reproduce con {partner} y crea un hijo {child}")
+            print(f"AAAAAAAAAAAAAAAAAAAAAAAgente {self} se reproduce con {partner} y crea un hijo {child}")
             return child
         return None
 

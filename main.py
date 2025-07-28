@@ -7,7 +7,7 @@ from classes.map import Map
 from classes.water import Water
 
 def run_simulation(run_id=1, visualize=False):
-    mapa = Map(10, 10)
+    mapa = Map(6, 6)
 
     # Añadir agua
     rand_water = random.randint(1, 3)
@@ -15,8 +15,8 @@ def run_simulation(run_id=1, visualize=False):
     mapa.add_water(water)
 
     # Crear agentes
-    rand_ag = random.randint(3, 5)
-    agentes = [Agent(energy=random.randint(7, 12), map=mapa) for _ in range(rand_ag)]
+    rand_ag = random.randint(2, 4)
+    agentes = [Agent(energy=random.randint(15, 25), map=mapa) for _ in range(rand_ag)]
 
     # Crear comida
     rand_comida = random.randint(2, 8)
