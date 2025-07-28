@@ -35,7 +35,7 @@ def run_simulation(run_id=1, visualize=False):
             mapa.add_food(nuevas_comidas)
 
         paso = []
-        for idx, ag in enumerate(agentes):
+        for idx, ag in enumerate(agentes[:]):
             estado = {
                 "Agente": idx,
                 "Iteración": iteracion,
@@ -54,6 +54,9 @@ def run_simulation(run_id=1, visualize=False):
             if ag.is_dead() == False:
                 ag.smart_move(mapa)
                 ag.update(mapa)
+                for nuevo_agente in mapa.agents:
+                    if nuevo_agente not in agentes:
+                        agentes.append(nuevo_agente)
 
                 estado["Ha Comido"] = ag.just_ate
                 estado["Ha Bebido"] = ag.just_drank
