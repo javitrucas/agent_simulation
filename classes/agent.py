@@ -70,6 +70,12 @@ class Agent:
                 self.move_towards(ideal_pos)
             else:
                 self.random_move(map)
+        elif self.is_hungry() == False and self.is_thirsty() == False:
+            ideal_pos = self.search_for_partner(map)
+            if ideal_pos is not None:
+                self.move_towards(ideal_pos)
+            else:
+                self.random_move(map)
         elif self.is_dead() == False:
             self.random_move(map)
 
@@ -125,6 +131,15 @@ class Agent:
                     print(f"Agua encontrada en {pos}")
                     return pos
         return None
+    
+    def search_for_partner(self, map):
+        visible_positions = self.view()
+        for pos in visible_positions:
+            for agent in map.agents:
+                if agent is not self and agent.pos == pos:
+                    print(f"Pareja encontrada en {pos}")
+                    return agent
+        return None
 
     def view(self):
         x, y = self.pos
@@ -138,8 +153,8 @@ class Agent:
 
     # Actualización del Agente
     def update(self, map):
-        just_ate = False
-        just_drank = False
+        self.just_ate = False
+        self.just_drank = False
 
         # Intenta comer cualquier comida que esté en la posición actual
         if self.is_hungry(): 
@@ -196,6 +211,20 @@ class Agent:
                 print(f"Agente bebe agua en {pos}")
                 return True
         return False
+    
+    def reproduce(self, partner):
+        if self.is_dead() == None or partner.is_dead() == None:
+            if self.sex != partner:
+                if self.age >= 5 and partner.age >= 5:
+                    if (self.is_hungry() == None or self.is_thirsty() == None) and (partner.is_hungry() == None or partner.is_thirsty() == None):
+                            if self.pos == partner.pos:
+                                hijo= Agent(
+                                    pos=self.pos,
+                                    map=self.map)
+                                self.map.agents.append(hijo)
+                                print(f"Agente {self} se reproduce con {partner} y crea un hijo {hijo}")
+        else:
+            return None
 
     # Métodos de consulta del Agente
     def is_hungry(self):
