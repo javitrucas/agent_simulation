@@ -1,26 +1,31 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=10, thirst=15, velocity=1, history=None, hunger_threshold=7, thirst_threshold=12, 
+    def __init__(self, pos=None, energy=10, thirst=15, history=None, hunger_threshold=7, thirst_threshold=12, 
                  age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0):
+        # Posición Inicial
         if pos is None:
             self.pos = self.random_position(map)
         else:
             self.pos = pos
+        
+        # Atributos del Agente
         self.energy = energy
         self.thirst = thirst
-        self.velocity = velocity
-        self.history = []
-        self.hunger_threshold = hunger_threshold
-        self.thirst_threshold = thirst_threshold
         self.age = age
         self.sex=self.select_sex()
         self.life_span = self.life_span()
-        self.times_eaten = times_eaten
-        self.times_drunk = times_drunk
+        self.hunger_threshold = hunger_threshold
+        self.thirst_threshold = thirst_threshold
+        
+        # Historial de acciones
+        self.history = []
         self.just_ate = False
         self.just_drank = False
-
+        self.times_eaten = times_eaten
+        self.times_drunk = times_drunk
+        
+    # Movimiento y Comportamiento
     def random_move(self, map):
         if self.is_dead():
             print("El agente no puede moverse porque se ha muerto.")
@@ -68,100 +73,6 @@ class Agent:
         elif self.is_dead() == False:
             self.random_move(map)
 
-    def update(self, map):
-        just_ate = False
-        just_drank = False
-
-        # Intenta comer cualquier comida que esté en la posición actual
-        if self.is_hungry(): 
-            for food in map.food:
-                if self.eat(food):
-                    self.just_ate = True
-                    food.eaten()  # Marca la comida como comida o elimínala del mapa
-                    break
-
-        # Intenta beber si tiene sed
-        if self.is_thirsty():
-            for water in map.water:
-                if self.drink(water):
-                    self.just_drank = True
-                    break  # Solo bebe una vez por turno
-
-        # Reduce energía y sed al actualizar
-        self.energy -= 1
-        self.thirst -= 1
-
-        # Verifica si el agente ha muerto
-        if self.is_dead():
-            print("El agente se ha quedado sin energía o agua y MUERE.")
-            self.pos = None
-            #self.age = -1  # Marca la edad como -1 para indicar que está muerto
-
-        # Actualiza la edad y el historial de posiciones
-        if self.is_dead() == False:
-            self.age += 1
-            self.history.append(self.pos)
-
-
-    def eat(self, food):
-        if food.pos == self.pos:
-            self.energy += food.energy
-            self.times_eaten+=1
-            return True
-        return False
-    
-    def drink(self, water):
-        x, y = self.pos
-        drinkable_area = [
-            (x, y),
-            (x + 1, y),
-            (x - 1, y),
-            (x, y + 1),
-            (x, y - 1)
-        ]
-
-        for pos in drinkable_area:
-            if pos in water.positions:
-                self.thirst += water.energy
-                self.times_drunk+=1
-                print(f"Agente bebe agua en {pos}")
-                return True
-        return False
-
-    def is_hungry(self):
-        return self.energy <= self.hunger_threshold
-    
-    def is_thirsty(self):
-        return self.thirst <= self.thirst_threshold
-    
-    def search_for_food(self, map):
-        visible_positions = self.view()
-        for pos in visible_positions:
-            for food in map.food:
-                if food.pos == pos:
-                    print(f"Comida encontrada en {pos}")
-                    return pos
-        return None
-
-    def search_for_water(self, map):
-        visible_positions = self.view()
-        for pos in visible_positions:
-            for water in map.water:
-                if pos in water.positions:
-                    print(f"Agua encontrada en {pos}")
-                    return pos
-        return None
-
-    def view(self):
-        x, y = self.pos
-        positions = []
-        start_x, start_y = x - 2, y + 2
-        for i in range(5):
-            for j in range(5):
-                pos = (start_x + i, start_y - j)
-                positions.append(pos)
-        return positions
-
     def move_towards(self, target_pos, map=None):
         if self.pos is None or target_pos is None:
             return
@@ -196,7 +107,107 @@ class Agent:
                     return
 
         self.pos = new_pos
+
+    def search_for_food(self, map):
+        visible_positions = self.view()
+        for pos in visible_positions:
+            for food in map.food:
+                if food.pos == pos:
+                    print(f"Comida encontrada en {pos}")
+                    return pos
+        return None
+
+    def search_for_water(self, map):
+        visible_positions = self.view()
+        for pos in visible_positions:
+            for water in map.water:
+                if pos in water.positions:
+                    print(f"Agua encontrada en {pos}")
+                    return pos
+        return None
+
+    def view(self):
+        x, y = self.pos
+        positions = []
+        start_x, start_y = x - 2, y + 2
+        for i in range(5):
+            for j in range(5):
+                pos = (start_x + i, start_y - j)
+                positions.append(pos)
+        return positions
+
+    # Actualización del Agente
+    def update(self, map):
+        just_ate = False
+        just_drank = False
+
+        # Intenta comer cualquier comida que esté en la posición actual
+        if self.is_hungry(): 
+            for food in map.food:
+                if self.eat(food):
+                    self.just_ate = True
+                    food.eaten()  # Marca la comida como comida o elimínala del mapa
+                    break
+
+        # Intenta beber si tiene sed
+        if self.is_thirsty():
+            for water in map.water:
+                if self.drink(water):
+                    self.just_drank = True
+                    break  # Solo bebe una vez por turno
+
+        # Reduce energía y sed al actualizar
+        self.energy -= 1
+        self.thirst -= 1
+
+        # Verifica si el agente ha muerto
+        if self.is_dead():
+            print("El agente se ha quedado sin energía o agua y MUERE.")
+            self.pos = None
+            #self.age = -1  # Marca la edad como -1 para indicar que está muerto
+
+        # Actualiza la edad y el historial de posiciones
+        if self.is_dead() == False:
+            self.age += 1
+            self.history.append(self.pos)
+
+    # Acciones del Agente
+    def eat(self, food):
+        if food.pos == self.pos:
+            self.energy += food.energy
+            self.times_eaten+=1
+            return True
+        return False
     
+    def drink(self, water):
+        x, y = self.pos
+        drinkable_area = [
+            (x, y),
+            (x + 1, y),
+            (x - 1, y),
+            (x, y + 1),
+            (x, y - 1)
+        ]
+
+        for pos in drinkable_area:
+            if pos in water.positions:
+                self.thirst += water.energy
+                self.times_drunk+=1
+                print(f"Agente bebe agua en {pos}")
+                return True
+        return False
+
+    # Métodos de consulta del Agente
+    def is_hungry(self):
+        return self.energy <= self.hunger_threshold
+    
+    def is_thirsty(self):
+        return self.thirst <= self.thirst_threshold
+    
+    def is_dead(self):
+        return self.energy <= 0 or self.thirst <= 0 or self.age > self.life_span
+    
+    # Métodos de estado del Agente
     def random_position(self, map):
         water_positions = set()
         for w in map.water:
@@ -225,9 +236,6 @@ class Agent:
             return "Sed"
         else:
             return "Desconocido"
-        
-    def is_dead(self):
-        return self.energy <= 0 or self.thirst <= 0 or self.age > self.life_span
                 
 # Fuera de la clase Agent
 def stay(agente):
