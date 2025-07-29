@@ -87,36 +87,26 @@ class Agent:
             self.explore_memory_random(map)
   
     def move_towards(self, target_pos, map=None):
-        if not self.is_dead() or target_pos is None:
+        if self.is_dead() or target_pos is None:
             return
 
         x, y = self.pos
         target_x, target_y = target_pos
 
-        new_x, new_y = x, y
-        if x < target_x:
-            new_x += 1
-        elif x > target_x:
-            new_x -= 1
-
-        if y < target_y:
-            new_y += 1
-        elif y > target_y:
-            new_y -= 1
-
+        # Movimiento preferente en dirección X, luego Y
+        new_x = x + (1 if target_x > x else -1 if target_x < x else 0)
+        new_y = y + (1 if target_y > y else -1 if target_y < y else 0)
         new_pos = (new_x, new_y)
 
         if map:
-            water_positions = set()
-            for w in map.water:
-                water_positions.update(w.positions)
+            # Evita agua
+            water_positions = {p for w in map.water for p in w.positions}
             if new_pos in water_positions:
                 return
-        
-        if map:
-            for agent in map.agents:
-                if agent is not self and agent.pos == new_pos:
-                        return 
+
+            # Evita colisionar con otros agentes
+            if any(agent is not self and agent.pos == new_pos for agent in map.agents):
+                return
 
         self.pos = new_pos
 
@@ -219,7 +209,7 @@ class Agent:
             for food in map.food:
                 if self.eat(food):
                     self.just_ate = True
-                    food.eaten(self.pos)  # Marca la comida como comida o elimínala del mapa
+                    food.eaten(self.pos)  # Marca la comida como comida
                     break
 
         # Intenta beber si tiene sed
