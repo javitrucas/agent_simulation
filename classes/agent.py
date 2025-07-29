@@ -2,7 +2,8 @@ import random
 
 class Agent:
     def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=10, thirst_threshold=10, 
-                 age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0, reproduce_threshold=5, reproduction_cooldown=0):
+                 age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0, reproduce_threshold=5,
+                reproduction_cooldown=0, n_children=0, generation=0):
         # Posición Inicial
         if pos is None:
             self.pos = self.random_position(map)
@@ -22,6 +23,8 @@ class Agent:
         self.thirst_threshold = thirst_threshold
         self.reproduce_threshold = reproduce_threshold
         self.reproduction_cooldown = reproduction_cooldown
+        self.n_children = n_children
+        self.generation=generation
         
         # Historial de acciones
         self.history = []
@@ -243,9 +246,15 @@ class Agent:
     
     def reproduce(self, partner):
         if self.can_reproduce_with(partner) and self.sex == "mujer":
-            child = Agent(pos=self.pos, map=self.map)
+            # Crear un nuevo agente hijo
+            new_generation = self.generation + 1
+            child = Agent(pos=self.pos, map=self.map, generation=new_generation)
             self.map.agents.append(child)
             print(f"NACIMIENTO de un nuevo agente en {self.pos}, sexo {child.sex}")
+            
+            # Actualizar los atributos de reproducción
+            self.n_children += 1
+            partner.n_children += 1
             self.reproduction_cooldown = 3
             partner.reproduction_cooldown = 3
             return child

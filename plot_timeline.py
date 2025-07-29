@@ -122,6 +122,82 @@ def plot_timeline(run_id=1):
     plt.tight_layout()
     plt.show()
 
+def plot_alive_count(run_id=1):
+    filename = f"output/runs/run_{run_id}_timeline.csv"
+    df = pd.read_csv(filename)
+
+    # Agrupar por iteración y contar los agentes que no están muertos
+    vivos_por_iteracion = df[df["Muerto"] == False].groupby("Iteración")["Agente"].nunique()
+
+    plt.figure(figsize=(12, 6))
+    plt.plot(vivos_por_iteracion.index, vivos_por_iteracion.values, color='#2B6CB0', linewidth=2.5)
+    plt.title(f'Número de Agentes Vivos por Iteración — Run {run_id}', fontsize=20, pad=15)
+    plt.xlabel("Iteración", fontsize=14)
+    plt.ylabel("Agentes vivos", fontsize=14)
+    plt.grid(True, linestyle="--", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+
+def plot_run_summary(run_id):
+    resumen_path = "output/resumen_runs.csv"
+    
+    if not os.path.exists(resumen_path):
+        print(f"No se encontró el archivo {resumen_path}")
+        return
+
+    df = pd.read_csv(resumen_path)
+    
+    if "run_id" not in df.columns:
+        print("La columna 'run_id' no está presente en el archivo resumen_runs.csv")
+        return
+    
+    df_run = df[df["run_id"] == run_id]
+    
+    if df_run.empty:
+        print(f"No se encontró información para run_id={run_id}")
+        return
+
+    row = df_run.iloc[0]
+
+    # Gráfica de agentes
+    plt.figure(figsize=(14, 6))
+
+    plt.subplot(1, 3, 1)
+    plt.pie([row["num_hombres"], row["num_mujeres"]],
+            labels=["Hombres", "Mujeres"],
+            autopct='%1.1f%%',
+            startangle=90,
+            colors=["lightblue", "lightpink"])
+    plt.title("Distribución por Sexo")
+
+    # Gráficas por muerte
+    plt.subplot(1, 3, 2)
+    muertes = {
+        "Sed": row["muertes_sed"],
+        "Energía": row["muertes_energia"],
+        "Edad": row["muertes_edad"],
+        "Desconocida": row["muertes_desconocida"]
+    }
+
+    plt.pie(muertes.values(),
+            labels=muertes.keys(),
+            autopct='%1.1f%%',
+            startangle=90,
+            colors=["#91c7b1", "#f4a582", "#d1c4e9", "#cccccc"])
+    plt.title("Causas de Muerte")
+
+    # Gráfica de barras
+    plt.subplot(1, 3, 3)
+    etiquetas = ["Edad Media", "Comidas", "Bebidas", "Hijos"]
+    valores = [row["edad_media"], row["comidas_totales"], row["bebidas_totales"], row["num_hijos_totales"]]
+    colores = ["#6baed6", "#74c476", "#fd8d3c", "#d62728"]
+
+    plt.bar(etiquetas, valores, color=colores, alpha=0.9)
+    plt.title("Estadísticas Finales")
+    plt.ylabel("Cantidad")
+
 if __name__ == "__main__":
     for run_id in range(1, 11):
-        plot_timeline(run_id)
+        #plot_timeline(run_id)
+        #plot_alive_count(run_id)
+        plot_run_summary(run_id)

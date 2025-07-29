@@ -56,7 +56,7 @@ for run_id in range(1, NUM_RUNS + 1):
     with open(f"{OUTPUT_DIR_RUNS}/run_{run_id}_timeline.csv", "w", newline="") as f:
         fieldnames = ["Iteración", "Agente", "Posición", "Energía", "Sed", "Edad",
                       "Tiene Hambre", "Tiene Sed", "Ha Comido", "Ha Bebido",
-                      "Muerto", "Causa de Muerte"]
+                      "Muerto", "Causa de Muerte", "Generación", "Hijos"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for paso in timeline:

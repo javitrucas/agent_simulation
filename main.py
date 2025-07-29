@@ -6,7 +6,7 @@ from classes.food import Food
 from classes.map import Map
 from classes.water import Water
 
-MAX_AGENTES = 10 # Controlar población máxima
+MAX_AGENTES = 15 # Controlar población máxima
 
 
 def run_simulation(run_id=1, visualize=False):
@@ -52,7 +52,9 @@ def run_simulation(run_id=1, visualize=False):
                 "Ha Comido": False,
                 "Ha Bebido": False,
                 "Muerto": False,
-                "Causa de Muerte": ""
+                "Causa de Muerte": "",
+                "Generación": ag.generation, 
+                "Hijos": ag.n_children       
             }
 
             if ag.is_dead() == False:
@@ -104,7 +106,8 @@ def run_simulation(run_id=1, visualize=False):
         "muertes_desconocida": sum(1 for ag in agentes if ag.couse_death() == "Desconocido"),
         "edad_media": round(sum(ag.age for ag in agentes) / len(agentes), 2),
         "comidas_totales": sum(ag.times_eaten for ag in agentes),
-        "bebidas_totales": sum(ag.times_drunk for ag in agentes)
+        "bebidas_totales": sum(ag.times_drunk for ag in agentes),
+        "num_hijos_totales": sum(1 for ag in agentes if ag.generation != 0)
     }
 
     historial_total = [ag.history for ag in agentes]
