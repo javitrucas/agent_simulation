@@ -247,7 +247,11 @@ class Agent:
     def reproduce(self, partner):
         if self.can_reproduce_with(partner) and self.sex == "mujer":
             # Crear un nuevo agente hijo
-            new_generation = self.generation + 1
+            if self.generation > partner.generation:
+                new_generation = self.generation + 1
+            else:
+                new_generation = partner.generation + 1
+
             child = Agent(pos=self.pos, map=self.map, generation=new_generation)
             self.map.agents.append(child)
             print(f"NACIMIENTO de un nuevo agente en {self.pos}, sexo {child.sex}")

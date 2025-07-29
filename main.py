@@ -107,7 +107,8 @@ def run_simulation(run_id=1, visualize=False):
         "edad_media": round(sum(ag.age for ag in agentes) / len(agentes), 2),
         "comidas_totales": sum(ag.times_eaten for ag in agentes),
         "bebidas_totales": sum(ag.times_drunk for ag in agentes),
-        "num_hijos_totales": sum(1 for ag in agentes if ag.generation != 0)
+        "num_hijos_totales": sum(1 for ag in agentes if ag.generation != 0),
+        "generation": max((ag.generation for ag in agentes), default=0)
     }
 
     historial_total = [ag.history for ag in agentes]
