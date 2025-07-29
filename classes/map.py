@@ -82,11 +82,12 @@ class Map:
 
         # Dibujar comida
         for comida in self.food:
-            if comida.pos is not None:
-                x, y = comida.pos
-                imagebox = OffsetImage(self.food_img, zoom=0.1)
-                ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
-                self.ax.add_artist(ab)
+            for pos in comida.positions:
+                if pos is not None:
+                    x, y = pos
+                    imagebox = OffsetImage(self.food_img, zoom=0.1)
+                    ab = AnnotationBbox(imagebox, (x + 0.5, y + 0.5), frameon=False)
+                    self.ax.add_artist(ab)
 
         # Dibujar agua
         for water in self.water:

@@ -8,6 +8,7 @@ import seaborn as sns
 def plot_run_heatmap(run_number, ax=None):
     # Rutas de archivos
     agua_file = f'output/runs/run_{run_number}_agua.csv'
+    comida_file = f'output/runs/run_{run_number}_comida.csv'
     historial_file = f'output/runs/run_{run_number}_historial.csv'
     
     # Si no se proporciona ax, crear figura independiente
@@ -22,11 +23,11 @@ def plot_run_heatmap(run_number, ax=None):
     # Cargar CSVs
     agua_df = pd.read_csv(agua_file)
     historial_df = pd.read_csv(historial_file)
+    comida_df = pd.read_csv(comida_file)
 
     # Extraer posiciones de agua (adaptado al nuevo formato x_0,y_0,x_1,y_1,...)
     agua_positions = []
     for _, row in agua_df.iterrows():
-        # Las posiciones empiezan en la columna 2, en pares (x_i, y_i)
         pos_values = row[2:].values
         for i in range(0, len(pos_values), 2):
             x = pos_values[i]
@@ -37,6 +38,22 @@ def plot_run_heatmap(run_number, ax=None):
                 x_int = int(float(x))
                 y_int = int(float(y))
                 agua_positions.append((x_int, y_int))
+            except (ValueError, TypeError):
+                continue
+
+    # Extraer posiciones de comida (igual que agua)
+    comida_positions = []
+    for _, row in comida_df.iterrows():
+        pos_values = row[2:].values
+        for i in range(0, len(pos_values), 2):
+            x = pos_values[i]
+            y = pos_values[i + 1] if i + 1 < len(pos_values) else None
+            if pd.isna(x) or pd.isna(y) or x == '' or y == '':
+                continue
+            try:
+                x_int = int(float(x))
+                y_int = int(float(y))
+                comida_positions.append((x_int, y_int))
             except (ValueError, TypeError):
                 continue
 
@@ -56,13 +73,13 @@ def plot_run_heatmap(run_number, ax=None):
             except (ValueError, TypeError):
                 continue
 
-    if not all_agent_positions and not agua_positions:
+    if not all_agent_positions and not agua_positions and not comida_positions:
         if standalone:
             print("No hay datos de posiciones para mostrar el heatmap.")
         return
 
-    all_x = [p[0] for p in all_agent_positions + agua_positions]
-    all_y = [p[1] for p in all_agent_positions + agua_positions]
+    all_x = [p[0] for p in all_agent_positions + agua_positions + comida_positions]
+    all_y = [p[1] for p in all_agent_positions + agua_positions + comida_positions]
     xmin, xmax = min(all_x), max(all_x)
     ymin, ymax = min(all_y), max(all_y)
 
@@ -83,10 +100,16 @@ def plot_run_heatmap(run_number, ax=None):
         cbar = plt.colorbar(cax, ax=ax, label='Número de visitas de agentes')
         cbar.ax.yaxis.label.set_size(12)
 
-    # Dibujar agua
+    # Dibujar agua (azul)
     for (x, y) in agua_positions:
         rect = plt.Rectangle((x - xmin - 0.5, y - ymin - 0.5), 1, 1,
                              linewidth=1, edgecolor='blue', facecolor='blue', alpha=0.3)
+        ax.add_patch(rect)
+
+    # Dibujar comida (verde)
+    for (x, y) in comida_positions:
+        rect = plt.Rectangle((x - xmin - 0.5, y - ymin - 0.5), 1, 1,
+                             linewidth=1, edgecolor='green', facecolor='green', alpha=0.3)
         ax.add_patch(rect)
 
     ax.set_xticks(np.arange(width))

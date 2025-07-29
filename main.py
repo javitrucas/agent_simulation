@@ -6,10 +6,11 @@ from classes.food import Food
 from classes.map import Map
 from classes.water import Water
 
+MAX_ITER=500
 
 def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
                     agents_min=2, agents_max=6, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
-                    food_min=2, food_max=8, new_food_chance=1):
+                    food_min=2, food_max=5, new_food_chance=1):
     mapa = Map(map_x, map_y)
 
     # Añadir agua
@@ -19,7 +20,7 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
 
     # Crear agentes
     rand_ag = random.randint(agents_min, agents_max)
-    agentes = [Agent(energy=random.randint(agent_energy_min, agent_energy_max), map=mapa, thirst=random.randint(agent_thrist_min, agent_thrist_min)) for _ in range(rand_ag)]
+    agentes = [Agent(energy=random.randint(agent_energy_min, agent_energy_max), map=mapa, thirst=random.randint(agent_thrist_min, agent_thrist_max)) for _ in range(rand_ag)]
 
     # Crear comida
     rand_comida = random.randint(food_min, food_max)
@@ -32,11 +33,11 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
     timeline = []
     iteracion = 1
 
-    while any(ag.energy > 0 and ag.pos is not None for ag in agentes):
+    while any(ag.energy > 0 and ag.pos is not None for ag in agentes) or iteracion>=MAX_ITER:
         # agentes = [ag for ag in agentes if not ag.is_dead()]
-        if random.randint(1, 10) <= new_food_chance:
-            nuevas_comidas = [Food(map=mapa) for _ in range(random.randint(food_min, food_max))]
-            mapa.add_food(nuevas_comidas)
+        # if random.randint(0, 100) <= new_food_chance:
+        #    nuevas_comidas = [Food(map=mapa) for _ in range(random.randint(food_min, food_max))]
+        #    mapa.add_food(nuevas_comidas)
 
         paso = []
         for idx, ag in enumerate(agentes[:]):
@@ -81,6 +82,10 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
         if visualize:
             mapa.visualizar_mapa()
 
+         # Actualizar regeneración de la comida
+        for comida in comidas:
+            comida.update()
+
         iteracion += 1
 
     # Mostrar datos de los agentes
@@ -113,8 +118,9 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
 
     historial_total = [ag.history for ag in agentes]
     agua = [w.positions for w in water]
+    comida = [c.positions for c in comidas]
 
-    return resumen, historial_total, agua, timeline
+    return resumen, historial_total, agua,comida, timeline
 
 if __name__ == "__main__":
     resumen, historial, agua, timeline = run_simulation(run_id=1, visualize=True, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,

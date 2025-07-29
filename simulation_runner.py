@@ -11,9 +11,9 @@ resumenes = []
 
 for run_id in range(1, NUM_RUNS + 1):
     print(f"Ejecutando simulación {run_id}...")
-    resumen, histories, agua, timeline = run_simulation(run_id=run_id, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
-                    agents_min=2, agents_max=6, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
-                    food_min=2, food_max=8, new_food_chance=1)
+    resumen, histories, agua, comida,timeline = run_simulation(run_id=run_id, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
+                    agents_min=2, agents_max=5, agent_energy_min=10, agent_energy_max=30, agent_thrist_min=10, agent_thrist_max=30,
+                    food_min=2, food_max=5, new_food_chance=1)
     resumenes.append(resumen)
 
     # Encontrar longitud máxima entre todos los historiales de agentes
@@ -54,7 +54,25 @@ for run_id in range(1, NUM_RUNS + 1):
                 row += [pos[0], pos[1]]
             writer.writerow(row)
 
-    # Guardar timeline de eventos por iteración (igual que antes)
+    # Guardar comida (guardando cada posición en columnas separadas x_i, y_i)
+    with open(f"{OUTPUT_DIR_RUNS}/run_{run_id}_comida.csv", "w", newline="") as f:
+        writer = csv.writer(f)
+        # Cabecera: Tipo, Bloque, x_0, y_0, x_1, y_1, ...
+        max_positions = max(len(bloque) for bloque in comida)
+        header = ["Tipo", "Bloque"]
+        for i in range(max_positions):
+            header += [f"x_{i}", f"y_{i}"]
+        writer.writerow(header)
+
+        for idx, bloque in enumerate(comida):
+            row = ["Comida", idx]
+            # Completar con ('', '') si faltan posiciones para igualar longitud
+            padded_block = bloque + [('', '')] * (max_positions - len(bloque))
+            for pos in padded_block:
+                row += [pos[0], pos[1]]
+            writer.writerow(row)
+
+    # Guardar timeline de eventos por iteración
     with open(f"{OUTPUT_DIR_RUNS}/run_{run_id}_timeline.csv", "w", newline="") as f:
         fieldnames = ["Iteración", "Agente", "Posición", "Energía", "Sed", "Edad",
                       "Tiene Hambre", "Tiene Sed", "Ha Comido", "Ha Bebido",
@@ -65,7 +83,7 @@ for run_id in range(1, NUM_RUNS + 1):
             for estado in paso:
                 writer.writerow(estado)
 
-# Guardar resumen general (igual que antes)
+# Guardar resumen general
 with open(f"{OUTPUT_DIR}/resumen_runs.csv", "w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=resumenes[0].keys())
     writer.writeheader()

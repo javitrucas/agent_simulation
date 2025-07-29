@@ -36,7 +36,7 @@ class Agent:
     # Movimiento y Comportamiento
     def random_move(self, map):
         if self.is_dead():
-            print("El agente no puede moverse porque se ha muerto.")
+            # print("El agente no puede moverse porque se ha muerto.")
             return
 
         movimientos = [norte, sur, este, oeste, stay]
@@ -85,7 +85,7 @@ class Agent:
             else:
                 self.random_move(map)
         elif self.is_dead() == False:
-            self.random_move(map)
+            self.random_move(map)   
 
     def move_towards(self, target_pos, map=None):
         if self.pos is None or target_pos is None:
@@ -112,22 +112,33 @@ class Agent:
             for w in map.water:
                 water_positions.update(w.positions)
             if new_pos in water_positions:
-                return  # No moverse al agua
+                return
         
         if map:
             for agent in map.agents:
                 if agent is not self and agent.pos == new_pos:
                         return 
 
-
         self.pos = new_pos
+
+    def explore_memory_random(self, map):
+        # exploracion del mapa por busqueda aleatoria con memoria
+        pass
+
+    def explore_expansion(self, map):
+        # exploracion del mapa por exploracion basada en frentes de expansion
+        pass
+
+    def explore_curiosity(self, map):
+        # exploracion del mapa por curiosidad artificial/Entropia
+        pass    
 
     def search_for_food(self, map):
         visible_positions = self.view()
         for pos in visible_positions:
             for food in map.food:
-                if food.pos == pos:
-                    print(f"Comida encontrada en {pos}")
+                if pos in food.positions:
+                    # print(f"Comida encontrada en {pos}")
                     return pos
         return None
 
@@ -136,7 +147,7 @@ class Agent:
         for pos in visible_positions:
             for water in map.water:
                 if pos in water.positions:
-                    print(f"Agua encontrada en {pos}")
+                    # print(f"Agua encontrada en {pos}")
                     return pos
         return None
     
@@ -146,7 +157,7 @@ class Agent:
             for agent in map.agents:
                 if agent is not self and agent.pos == pos:
                     if self.can_reproduce_with(agent):
-                        print(f"Pareja compatible encontrada en {pos}")
+                        # print(f"Pareja compatible encontrada en {pos}")
                         return agent 
         return None
 
@@ -170,7 +181,7 @@ class Agent:
             for food in map.food:
                 if self.eat(food):
                     self.just_ate = True
-                    food.eaten()  # Marca la comida como comida o elimínala del mapa
+                    food.eaten(self.pos)  # Marca la comida como comida o elimínala del mapa
                     break
 
         # Intenta beber si tiene sed
@@ -197,7 +208,7 @@ class Agent:
 
         # Verifica si el agente ha muerto
         if self.is_dead():
-            print("El agente se ha quedado sin energía o agua y MUERE.")
+            # print("El agente se ha quedado sin energía o agua y MUERE.")
             self.pos = None
             #self.age = -1  # Marca la edad como -1 para indicar que está muerto
 
@@ -208,7 +219,7 @@ class Agent:
 
     # Acciones del Agente
     def eat(self, food):
-        if food.pos == self.pos:
+        if self.pos in food.positions:
             self.energy += food.energy
             self.times_eaten+=1
             return True
@@ -228,7 +239,7 @@ class Agent:
             if pos in water.positions:
                 self.thirst += water.energy
                 self.times_drunk+=1
-                print(f"Agente bebe agua en {pos}")
+                # print(f"Agente bebe agua en {pos}")
                 return True
         return False
     
@@ -254,7 +265,7 @@ class Agent:
 
             child = Agent(pos=self.pos, map=self.map, generation=new_generation)
             self.map.agents.append(child)
-            print(f"NACIMIENTO de un nuevo agente en {self.pos}, sexo {child.sex}")
+            # print(f"NACIMIENTO de un nuevo agente en {self.pos}, sexo {child.sex}")
             
             # Actualizar los atributos de reproducción
             self.n_children += 1
