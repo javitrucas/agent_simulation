@@ -6,8 +6,6 @@ from classes.food import Food
 from classes.map import Map
 from classes.water import Water
 
-MAX_ITER=500
-
 def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
                     agents_min=2, agents_max=6, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
                     food_min=2, food_max=5, new_food_chance=1):
@@ -33,7 +31,9 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
     timeline = []
     iteracion = 1
 
-    while any(ag.energy > 0 and ag.pos is not None for ag in agentes) or iteracion>=MAX_ITER:
+    MAX_ITER=50
+
+    while any(ag.energy > 0 and ag.pos is not None for ag in agentes) and iteracion<MAX_ITER:
         # agentes = [ag for ag in agentes if not ag.is_dead()]
         # if random.randint(0, 100) <= new_food_chance:
         #    nuevas_comidas = [Food(map=mapa) for _ in range(random.randint(food_min, food_max))]
@@ -88,6 +88,9 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
 
         iteracion += 1
 
+    if iteracion >= MAX_ITER:
+        print(f"⚠️ Simulación {run_id} detenida por límite de iteraciones.")
+
     # Mostrar datos de los agentes
     print("\nDatos de los agentes:")
     for idx, ag in enumerate(agentes):
@@ -123,6 +126,6 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
     return resumen, historial_total, agua,comida, timeline
 
 if __name__ == "__main__":
-    resumen, historial, agua, timeline = run_simulation(run_id=1, visualize=True, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
+    resumen, historial, agua, comida,timeline = run_simulation(run_id=1, visualize=True, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
                     agents_min=2, agents_max=6, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
                     food_min=2, food_max=8, new_food_chance=1)

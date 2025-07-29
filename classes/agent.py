@@ -173,6 +173,13 @@ class Agent:
 
     # Actualización del Agente
     def update(self, map):
+        # Verifica si el agente ha muerto
+        if self.is_dead():
+            # print("El agente se ha quedado sin energía o agua y MUERE.")
+            self.pos = None
+            return 
+            #self.age = -1  # Marca la edad como -1 para indicar que está muerto
+
         self.just_ate = False
         self.just_drank = False
 
@@ -205,12 +212,6 @@ class Agent:
         # Reduce energía y sed al actualizar
         self.energy -= 1
         self.thirst -= 1
-
-        # Verifica si el agente ha muerto
-        if self.is_dead():
-            # print("El agente se ha quedado sin energía o agua y MUERE.")
-            self.pos = None
-            #self.age = -1  # Marca la edad como -1 para indicar que está muerto
 
         # Actualiza la edad y el historial de posiciones
         if self.is_dead() == False:
