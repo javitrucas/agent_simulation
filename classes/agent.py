@@ -1,9 +1,9 @@
 import random
 
 class Agent:
-    def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=10, thirst_threshold=10, 
+    def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=8, thirst_threshold=8, 
                  age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0, reproduce_threshold=5,
-                reproduction_cooldown=0, n_children=0, generation=0):
+                reproduction_cooldown=0, n_children=0, generation=0, memory_water=None, memory_food=None):
         # Posición Inicial
         if pos is None:
             self.pos = self.random_position(map)
@@ -27,7 +27,9 @@ class Agent:
         self.generation=generation
         
         # Historial de acciones
-        self.history = []
+        self.memory_food = memory_food if memory_food is not None else set()
+        self.memory_water = memory_water if memory_water is not None else set()
+        self.history = history if history is not None else []
         self.just_ate = False
         self.just_drank = False
         self.times_eaten = times_eaten
@@ -123,6 +125,7 @@ class Agent:
 
     def explore_memory_random(self, map):
         # exploracion del mapa por busqueda aleatoria con memoria
+        
         pass
 
     def explore_expansion(self, map):
@@ -138,17 +141,26 @@ class Agent:
         for pos in visible_positions:
             for food in map.food:
                 if pos in food.positions:
-                    # print(f"Comida encontrada en {pos}")
+                    self.memory_food.add(pos)
                     return pos
-        return None
+        return self.search_in_memory(self.memory_food, map)
 
     def search_for_water(self, map):
         visible_positions = self.view()
         for pos in visible_positions:
             for water in map.water:
                 if pos in water.positions:
-                    # print(f"Agua encontrada en {pos}")
+                    self.memory_water.add(pos)
                     return pos
+        return self.search_in_memory(self.memory_water, map)
+    
+    def search_in_memory(self, memory_set, map):
+        for pos in memory_set.copy():
+            if pos not in [p for f in map.food for p in f.positions] and \
+            pos not in [p for w in map.water for p in w.positions]:
+                memory_set.discard(pos)  # eliminar posiciones inválidas
+            else:
+                return pos
         return None
     
     def search_for_partner(self, map):
@@ -220,6 +232,7 @@ class Agent:
     # Acciones del Agente
     def eat(self, food):
         if self.pos in food.positions:
+            self.food_memory = self.pos
             self.energy += food.energy
             self.times_eaten+=1
             return True
@@ -237,6 +250,7 @@ class Agent:
 
         for pos in drinkable_area:
             if pos in water.positions:
+                self.water_memory = pos
                 self.thirst += water.energy
                 self.times_drunk+=1
                 # print(f"Agente bebe agua en {pos}")
@@ -263,7 +277,11 @@ class Agent:
             else:
                 new_generation = partner.generation + 1
 
-            child = Agent(pos=self.pos, map=self.map, generation=new_generation)
+            # "Enseñar" al hijo donde hay comida y agua
+            child_memory_food = self.memory_food.union(partner.memory_food)
+            child_memory_water = self.memory_water.union(partner.memory_water)
+
+            child = Agent(pos=self.pos, map=self.map, generation=new_generation, memory_food=child_memory_food, memory_water=child_memory_water)
             self.map.agents.append(child)
             # print(f"NACIMIENTO de un nuevo agente en {self.pos}, sexo {child.sex}")
             

@@ -68,7 +68,7 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
                 estado["Ha Comido"] = ag.just_ate
                 estado["Ha Bebido"] = ag.just_drank
 
-                if ag.energy <= 0 or ag.pos is None:
+                if ag.is_dead():
                     estado["Muerto"] = True
                     estado["Causa de Muerte"] = ag.couse_death()
             else:
