@@ -68,27 +68,24 @@ class Agent:
         if self.is_dead():
             return
 
-        if self.is_hungry():
-            ideal_pos = self.search_for_food(map)
-            if ideal_pos is not None:
-                self.move_towards(ideal_pos)
-            else:
-                self.random_move(map)
-        elif self.is_thirsty():
-            ideal_pos = self.search_for_water(map)
-            if ideal_pos is not None:
-                self.move_towards(ideal_pos)
-            else:
-                self.random_move(map)
-        elif not self.is_hungry() and not self.is_thirsty() and self.sex=="hombre":
-            partner = self.search_for_partner(map)
-            if partner is not None:
-                self.move_towards(partner.pos, map)
-            else:
-                self.random_move(map)
-        elif self.is_dead() == False:
-            self.random_move(map)   
+        # Decisión de movimiento según necesidades
+        target_pos = None
 
+        if self.is_hungry():
+            target_pos = self.search_for_food(map)
+        elif self.is_thirsty():
+            target_pos = self.search_for_water(map)
+        elif self.sex == "hombre" and not self.is_hungry() and not self.is_thirsty():
+            partner = self.search_for_partner(map)
+            if partner:
+                target_pos = partner.pos
+
+        # Ejecutar movimiento
+        if target_pos:
+            self.move_towards(target_pos, map)
+        else:
+            self.explore_memory_random(map)
+  
     def move_towards(self, target_pos, map=None):
         if not self.is_dead() or target_pos is None:
             return
@@ -124,9 +121,31 @@ class Agent:
         self.pos = new_pos
 
     def explore_memory_random(self, map):
-        # exploracion del mapa por busqueda aleatoria con memoria
-        
-        pass
+        # Exploración aleatoria con memoria
+        movimientos = [norte, sur, este, oeste]
+        random.shuffle(movimientos)  # Probar primero direcciones aleatorias
+
+        # Posiciones con agua y ocupadas
+        water_positions = {pos for w in map.water for pos in w.positions}
+        occupied_positions = {agent.pos for agent in map.agents if agent is not self and agent.pos is not None}
+
+        for direccion in movimientos:
+            nueva_pos = direccion(self)
+            x, y = nueva_pos
+
+            if (
+                0 <= x < map.width and
+                0 <= y < map.height and
+                nueva_pos not in water_positions and
+                nueva_pos not in self.history and
+                nueva_pos not in occupied_positions
+            ):
+                self.pos = nueva_pos
+                self.history.append(nueva_pos)
+                return
+
+        # Si no hay ninguna nueva dirección válida, moverse aleatoriamente
+        self.random_move(map)
 
     def explore_expansion(self, map):
         # exploracion del mapa por exploracion basada en frentes de expansion
@@ -143,7 +162,7 @@ class Agent:
                 if pos in food.positions:
                     self.memory_food.add(pos)
                     return pos
-        return self.search_in_memory(self.memory_food, map)
+        return self.search_in_memory(self.memory_food)
 
     def search_for_water(self, map):
         visible_positions = self.view()
@@ -152,16 +171,14 @@ class Agent:
                 if pos in water.positions:
                     self.memory_water.add(pos)
                     return pos
-        return self.search_in_memory(self.memory_water, map)
-    
-    def search_in_memory(self, memory_set, map):
-        for pos in memory_set.copy():
-            if pos not in [p for f in map.food for p in f.positions] and \
-            pos not in [p for w in map.water for p in w.positions]:
-                memory_set.discard(pos)  # eliminar posiciones inválidas
-            else:
-                return pos
-        return None
+        return self.search_in_memory(self.memory_water)
+        
+    def search_in_memory(self, memory_set):
+        if not memory_set:
+            return None
+
+        # Devuelve la posición más cercana (Manhattan) al agente dentro de las guardadas en memoria
+        return min(memory_set, key=lambda pos: abs(pos[0] - self.pos[0]) + abs(pos[1] - self.pos[1]))
     
     def search_for_partner(self, map):
         visible_positions = self.view()
@@ -190,6 +207,9 @@ class Agent:
             # print("El agente se ha quedado sin energía o agua y MUERE.")
             self.pos = None
             return 
+
+        self.search_for_food(map)
+        self.search_for_water(map)
 
         self.just_ate = False
         self.just_drank = False

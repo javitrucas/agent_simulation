@@ -13,7 +13,7 @@ class Food:
         
         # Control para la regeneración
         self.iterations_since_eaten = 0
-        self.reset_after = random.randint(3, 15)
+        self.reset_after = random.randint(3, 5)
         
         # Estado para saber si la comida está "creciendo"
         self.is_growing = False

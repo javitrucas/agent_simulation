@@ -32,3 +32,10 @@ añadir roles (explorador, criadores, ...)
 el explorador puede "explorar" y transmitir informacion??
 posibilidad de crear base??
 necesidad de socializar??
+
+
+GENES
+gen de tonto = solo se puede mover de forma aleatoria
+gen de pedro pascal = tiene que estar siempre en un radio de 5x5 de una persona del sexo opuesto, si no lo busca da igual hambre y search_for_food
+gen curioso/curioso = se mueve por curiosidad
+gen hablador/escuchador = cuenta donde ha encontrado comida/agua
