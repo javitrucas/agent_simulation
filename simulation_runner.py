@@ -5,13 +5,15 @@ from main import run_simulation
 NUM_RUNS = 10
 OUTPUT_DIR = "output"
 OUTPUT_DIR_RUNS = OUTPUT_DIR + "/runs"
-os.makedirs(OUTPUT_DIR_RUNS, exist_ok=True)  # Asegúrate de crear la carpeta runs
+os.makedirs(OUTPUT_DIR_RUNS, exist_ok=True)
 
 resumenes = []
 
 for run_id in range(1, NUM_RUNS + 1):
     print(f"Ejecutando simulación {run_id}...")
-    resumen, histories, agua, timeline = run_simulation(run_id=run_id, visualize=False)
+    resumen, histories, agua, timeline = run_simulation(run_id=run_id, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
+                    agents_min=2, agents_max=6, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
+                    food_min=2, food_max=8, new_food_chance=1)
     resumenes.append(resumen)
 
     # Encontrar longitud máxima entre todos los historiales de agentes
