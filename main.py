@@ -31,9 +31,9 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
     timeline = []
     iteracion = 1
 
-    MAX_ITER=50
+    MAX_ITER=500
 
-    while any(ag.energy > 0 and ag.pos is not None for ag in agentes) and iteracion<MAX_ITER:
+    while any(not ag.is_dead() for ag in agentes) and iteracion<MAX_ITER:
         # agentes = [ag for ag in agentes if not ag.is_dead()]
         # if random.randint(0, 100) <= new_food_chance:
         #    nuevas_comidas = [Food(map=mapa) for _ in range(random.randint(food_min, food_max))]

@@ -88,7 +88,7 @@ class Agent:
             self.random_move(map)   
 
     def move_towards(self, target_pos, map=None):
-        if self.pos is None or target_pos is None:
+        if not self.is_dead() or target_pos is None:
             return
 
         x, y = self.pos
@@ -178,7 +178,6 @@ class Agent:
             # print("El agente se ha quedado sin energía o agua y MUERE.")
             self.pos = None
             return 
-            #self.age = -1  # Marca la edad como -1 para indicar que está muerto
 
         self.just_ate = False
         self.just_drank = False

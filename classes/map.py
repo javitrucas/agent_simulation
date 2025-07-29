@@ -66,7 +66,7 @@ class Map:
 
         # Dibujar agentes
         for agente in self.agents:
-            if agente.pos is not None:
+            if not agente.is_dead():
                 x, y = agente.pos
                 if agente.age < 5:
                     self.ax.plot(x + 0.5, y + 0.5, marker='o', color='pink', markersize=20, linestyle='')
