@@ -11,9 +11,9 @@ resumenes = []
 
 for run_id in range(1, NUM_RUNS + 1):
     print(f"Ejecutando simulación {run_id}...")
-    resumen, histories, agua, comida,timeline = run_simulation(run_id=run_id, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12, water_min=1, water_max=3,
+    resumen, histories, agua, comida,timeline = run_simulation(run_id=run_id, visualize=False, MAX_AGENTES=15, map_x=20, map_y=20, water_min=2, water_max=5,
                     agents_min=4, agents_max=6, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
-                    food_min=3, food_max=7, new_food_chance=1)
+                    food_min=5, food_max=10, new_food_chance=1)
     resumenes.append(resumen)
 
     # Encontrar longitud máxima entre todos los historiales de agentes

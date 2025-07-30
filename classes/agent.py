@@ -327,8 +327,15 @@ class Agent:
                 return pos
 
     def select_sex(self):
-        sexos = ["hombre", "mujer"]
-        return random.choice(sexos)
+        hombres = sum(1 for ag in self.map.agents if ag.sex == "hombre")
+        mujeres = sum(1 for ag in self.map.agents if ag.sex == "mujer")
+
+        if hombres > mujeres:
+            return random.choices(["mujer", "hombre"], weights=[0.8, 0.2])[0]
+        elif mujeres > hombres:
+            return random.choices(["hombre", "mujer"], weights=[0.8, 0.2])[0]
+        else:
+            return random.choice(["hombre", "mujer"])
     
     def lifespan(self):
         return random.randint(40, 100)
