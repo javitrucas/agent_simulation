@@ -101,6 +101,8 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
         print(f"Veces que ha comido: {ag.times_eaten}")
         print(f"Veces que ha bebido: {ag.times_drunk}")
         print(f"Causa de muerte: {ag.couse_death()}")
+        print(f"Generación: {ag.generation}")
+        print(f"Genes: {ag.gen}")
 
     # Recopilar datos finales
     resumen = {

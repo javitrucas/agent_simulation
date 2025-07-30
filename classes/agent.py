@@ -3,7 +3,8 @@ import random
 class Agent:
     def __init__(self, pos=None, energy=20, thirst=20, history=None, hunger_threshold=8, thirst_threshold=8, 
                  age=1, map=None, sex=None, life_span=None, times_eaten=0, times_drunk=0, reproduce_threshold=5,
-                reproduction_cooldown=0, n_children=0, generation=0, memory_water=None, memory_food=None):
+                reproduction_cooldown=0, n_children=0, generation=0, memory_water=None, memory_food=None, 
+                gen=[], mutated=False):
         # Posición Inicial
         if pos is None:
             self.pos = self.random_position(map)
@@ -25,6 +26,11 @@ class Agent:
         self.reproduction_cooldown = reproduction_cooldown
         self.n_children = n_children
         self.generation=generation
+        self.mutated = mutated
+        
+        # Genes
+        self.gen = gen if gen is not None else []
+        self.mutate()  # Aquí SÍ la llamas correctamente
         
         # Historial de acciones
         self.memory_food = memory_food if memory_food is not None else set()
@@ -37,8 +43,17 @@ class Agent:
     
     # Genes y Mutaciones
     def mutate(self):
-        # Aquí podrías implementar lógica de mutación genética si fuera necesario
-        pass
+        if self.mutated==True:
+            return
+
+        if random.randint(0, 100) < 10:
+            self.silly_gen()
+        
+        self.mutated=True
+
+    def silly_gen(self):
+        if not self.gen:
+            self.gen = ["tonto"]
 
     # Movimiento y Comportamiento
     def random_move(self, map):
@@ -71,6 +86,10 @@ class Agent:
 
     def smart_move(self, map):
         if self.is_dead():
+            return
+        
+        if self.gen == "tonto":
+            self.random_move(map)
             return
 
         # Decisión de movimiento según necesidades
