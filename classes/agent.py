@@ -34,7 +34,12 @@ class Agent:
         self.just_drank = False
         self.times_eaten = times_eaten
         self.times_drunk = times_drunk
-        
+    
+    # Genes y Mutaciones
+    def mutate(self):
+        # Aquí podrías implementar lógica de mutación genética si fuera necesario
+        pass
+
     # Movimiento y Comportamiento
     def random_move(self, map):
         if self.is_dead():

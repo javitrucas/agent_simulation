@@ -1,11 +1,11 @@
 import random
 
 class Food:
-    def __init__(self, map, energy=5):
+    def __init__(self, map, energy=10):
         self.map = map
         self.energy = energy
         
-        # Parche original con posiciones fijas de comida (los "árboles")
+        # Parche original con posiciones fijas de comida
         self.original_positions = self.generate_food_patch(map)
         
         # Inicialmente, la comida está disponible en esas posiciones
@@ -13,7 +13,7 @@ class Food:
         
         # Control para la regeneración
         self.iterations_since_eaten = 0
-        self.reset_after = random.randint(3, 5)
+        self.reset_after = random.randint(2, 4)
         
         # Estado para saber si la comida está "creciendo"
         self.is_growing = False

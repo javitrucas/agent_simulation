@@ -1,7 +1,7 @@
 import random
 
 class Water:
-    def __init__(self, pos=None, energy=5, map=None):
+    def __init__(self, pos=None, energy=10, map=None):
         if pos is None and map is not None:
             self.positions = self.generate_water_patch(map)
         elif pos is not None:
