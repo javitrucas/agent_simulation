@@ -175,12 +175,50 @@ class Agent:
         self.random_move(map)
 
     def explore_expansion(self, map):
-        # exploracion del mapa por exploracion basada en frentes de expansion
-        pass
+        if not hasattr(self, "frontier"):
+            self.frontier = []
+
+        # Si la frontera está vacía, generarla a partir de vecinos de la posición actual
+        if not self.frontier:
+            vecinos = self.get_vecinos(map, self.pos)
+            self.frontier.extend(v for v in vecinos if v not in self.history)
+
+        # Si hay frontera, elegir una posición y moverse hacia ella
+        if self.frontier:
+            objetivo = self.frontier.pop(0)  # estrategia FIFO (BFS)
+            self.pos = objetivo
+            self.history.append(objetivo)
+
+            # añadir nuevos vecinos a la frontera
+            vecinos = self.get_vecinos(map, objetivo)
+            self.frontier.extend(v for v in vecinos if v not in self.history)
 
     def explore_curiosity(self, map):
-        # exploracion del mapa por curiosidad artificial/Entropia
-        pass    
+        movimientos = [norte, sur, este, oeste]
+        candidatos = []
+
+        for direccion in movimientos:
+            nueva_pos = direccion(self)
+            x, y = nueva_pos
+
+            if not (0 <= x < map.width and 0 <= y < map.height):
+                continue
+            if nueva_pos in map.water:
+                continue
+
+            # Score de curiosidad: cuántos vecinos NO están en history
+            vecinos = self.get_vecinos(map, nueva_pos)
+            desconocidos = sum(1 for v in vecinos if v not in self.history)
+            candidatos.append((desconocidos, nueva_pos))
+
+        if candidatos:
+            # Elegir la posición con más desconocidos alrededor
+            _, mejor = max(candidatos, key=lambda x: x[0])
+            self.pos = mejor
+            self.history.append(mejor)
+        else:
+            # fallback si no hay nada "curioso"
+            self.random_move(map)
 
     def search_for_food(self, map):
         visible_positions = self.view()
