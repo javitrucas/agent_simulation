@@ -56,6 +56,14 @@ class Agent:
             self.fertility_gen()
             self.mutated=True
             return
+        elif  20 < probability < 40:
+            self.curiosity_gen()
+            self.mutated=True
+            return
+        elif 40 < probability < 60:
+            self.expansion_gen()
+            self.mutated=True
+            return
         
         self.gen = "normal"
         self.mutated=True
@@ -67,6 +75,14 @@ class Agent:
     def fertility_gen(self):
         if self.gen != "fertil":
             self.gen = "fertil"
+    
+    def curiosity_gen(self):
+        if self.gen != "curioso":
+            self.gen = "curioso"
+    
+    def expansion_gen(self):
+        if self.gen != "expansivo":
+            self.gen = "expansivo"
 
     # Movimiento y Comportamiento
     def random_move(self, map):
@@ -120,6 +136,10 @@ class Agent:
         # Ejecutar movimiento
         if target_pos:
             self.move_towards(target_pos, map)
+        elif self.gen == "curioso":
+            self.explore_curiosity(map)
+        elif self.gen == "expansivo":
+            self.explore_expansion(map)
         else:
             self.explore_memory_random(map)
   
@@ -178,20 +198,31 @@ class Agent:
         if not hasattr(self, "frontier"):
             self.frontier = []
 
-        # Si la frontera está vacía, generarla a partir de vecinos de la posición actual
+        # Si la frontera está vacía, generarla a partir de lo que ve alrededor
         if not self.frontier:
-            vecinos = self.get_vecinos(map, self.pos)
+            vecinos = self.view()
             self.frontier.extend(v for v in vecinos if v not in self.history)
 
         # Si hay frontera, elegir una posición y moverse hacia ella
         if self.frontier:
             objetivo = self.frontier.pop(0)  # estrategia FIFO (BFS)
-            self.pos = objetivo
-            self.history.append(objetivo)
+            x, y = objetivo
 
-            # añadir nuevos vecinos a la frontera
-            vecinos = self.get_vecinos(map, objetivo)
-            self.frontier.extend(v for v in vecinos if v not in self.history)
+            # Validar que el objetivo es una celda válida
+            if (
+                0 <= x < map.width and
+                0 <= y < map.height and
+                objetivo not in self.history
+            ):
+                self.pos = objetivo
+                self.history.append(objetivo)
+
+                # añadir nuevos vecinos visibles desde la nueva posición
+                vecinos = self.view()
+                self.frontier.extend(v for v in vecinos if v not in self.history)
+            else:
+                # Si el objetivo no es válido, saltarlo
+                return self.explore_expansion(map)
 
     def explore_curiosity(self, map):
         movimientos = [norte, sur, este, oeste]
@@ -201,13 +232,22 @@ class Agent:
             nueva_pos = direccion(self)
             x, y = nueva_pos
 
+            # Validar límites del mapa
             if not (0 <= x < map.width and 0 <= y < map.height):
                 continue
-            if nueva_pos in map.water:
+
+            # Evitar agua
+            water_positions = {pos for w in map.water for pos in w.positions}
+            if nueva_pos in water_positions:
                 continue
 
+            # Simular visión desde la nueva posición
+            old_pos = self.pos
+            self.pos = nueva_pos
+            vecinos = self.view()
+            self.pos = old_pos  # restaurar posición
+
             # Score de curiosidad: cuántos vecinos NO están en history
-            vecinos = self.get_vecinos(map, nueva_pos)
             desconocidos = sum(1 for v in vecinos if v not in self.history)
             candidatos.append((desconocidos, nueva_pos))
 
@@ -217,8 +257,8 @@ class Agent:
             self.pos = mejor
             self.history.append(mejor)
         else:
-            # fallback si no hay nada "curioso"
-            self.random_move(map)
+            # Si no hay nada curioso
+            self.explore_memory_random(map)
 
     def search_for_food(self, map):
         visible_positions = self.view()
@@ -361,15 +401,19 @@ class Agent:
             # Determinar la generación del hijo
             new_generation = max(self.generation, partner.generation) + 1
 
-            # Mezcla y paso de genes: si ambos padres tienen genes especiales, el hijo puede heredar uno aleatorio o ambos (como lista)
+            # Función auxiliar para añadir genes sin romper con listas
             parent_genes = set()
-            if self.gen != "normal":
-                parent_genes.add(self.gen)
-            if partner.gen != "normal":
-                parent_genes.add(partner.gen)
+            def add_gen(g):
+                if isinstance(g, list):
+                    parent_genes.update(g)  # mete todos los genes de la lista
+                elif g != "normal":
+                    parent_genes.add(g)
 
+            add_gen(self.gen)
+            add_gen(partner.gen)
+
+            # Determinar los genes heredados
             if parent_genes:
-                # El hijo puede heredar uno de los genes especiales aleatoriamente, o ambos si hay más de uno
                 genes_hijo = random.choice(list(parent_genes)) if len(parent_genes) == 1 else list(parent_genes)
                 hijo_mutado = True
             else:

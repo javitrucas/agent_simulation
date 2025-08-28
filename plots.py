@@ -421,7 +421,7 @@ def _plot_genes_evolution(run_id, ax):
     df_gen = df_tl.groupby(['Iteración', 'Genes']).size().unstack(fill_value=0)
 
     # Ordenar tus genes
-    genes = ['normal', 'tonto', 'fertil']  # extiende según necesites
+    genes = ['normal', 'tonto', 'fertil', 'curioso', 'expansivo']  # extiende según necesites
     for g in genes:
         if g not in df_gen.columns:
             df_gen[g] = 0
