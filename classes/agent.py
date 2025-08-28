@@ -117,6 +117,7 @@ class Agent:
         if self.is_dead():
             return
         
+        # Los "tontos" siempre se mueven aleatoriamente
         if self.gen == "tonto":
             self.random_move(map)
             return
@@ -124,16 +125,21 @@ class Agent:
         # Decisión de movimiento según necesidades
         target_pos = None
 
-        if self.is_hungry():
-            target_pos = self.search_for_food(map)
-        elif self.is_thirsty():
-            target_pos = self.search_for_water(map)
+        # buscar en memoria de comida
+        if self.is_hungry() and self.memory_food:
+            target_pos = min(self.memory_food, key=lambda p: abs(p[0] - self.pos[0]) + abs(p[1] - self.pos[1]))
+
+        # buscar en memoria de agua
+        elif self.is_thirsty() and self.memory_water:
+            target_pos = min(self.memory_water, key=lambda p: abs(p[0] - self.pos[0]) + abs(p[1] - self.pos[1]))
+
+        # buscar pareja
         elif self.sex == "hombre" and not self.is_hungry() and not self.is_thirsty():
             partner = self.search_for_partner(map)
             if partner:
                 target_pos = partner.pos
 
-        # Ejecutar movimiento
+        # Ejecutar movimiento hacia el objetivo si lo hay
         if target_pos:
             self.move_towards(target_pos, map)
         elif self.gen == "curioso":
