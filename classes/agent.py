@@ -29,7 +29,7 @@ class Agent:
         self.mutated = mutated
         
         # Genes
-        self.gen = gen if gen is not None else []
+        self.gen = gen if gen is not None else "normal"
         self.mutate()  # Aquí SÍ la llamas correctamente
         
         # Historial de acciones
@@ -46,14 +46,27 @@ class Agent:
         if self.mutated==True:
             return
 
-        if random.randint(0, 100) < 10:
+        probability = random.randint(0, 100)
+
+        if probability < 10:
             self.silly_gen()
+            self.mutated=True
+            return
+        elif 10 < probability < 20:
+            self.fertility_gen()
+            self.mutated=True
+            return
         
+        self.gen = "normal"
         self.mutated=True
 
     def silly_gen(self):
-        if not self.gen:
-            self.gen = ["tonto"]
+        if self.gen != "tonto":
+            self.gen = "tonto"
+    
+    def fertility_gen(self):
+        if self.gen != "fertil":
+            self.gen = "fertil"
 
     # Movimiento y Comportamiento
     def random_move(self, map):
@@ -252,6 +265,9 @@ class Agent:
             for agent in map.agents:
                 if agent is not self and self.can_reproduce_with(agent):
                     self.reproduce(agent)
+                    if self.gen=="fertil": # Si el agente tiene el gen fertil, se reinicia el cooldown de reproduccion y tiene gemelos
+                        self.reproduction_cooldown = 0
+                        self.reproduce(agent)
                     break
 
         # Reduce energía y sed al actualizar
@@ -302,24 +318,43 @@ class Agent:
             self.reproduction_cooldown <= 0 and other.reproduction_cooldown <= 0
         )
 
-    
     def reproduce(self, partner):
         if self.can_reproduce_with(partner) and self.sex == "mujer":
-            # Crear un nuevo agente hijo
-            if self.generation > partner.generation:
-                new_generation = self.generation + 1
-            else:
-                new_generation = partner.generation + 1
+            # Determinar la generación del hijo
+            new_generation = max(self.generation, partner.generation) + 1
 
-            # "Enseñar" al hijo donde hay comida y agua
+            # Mezcla y paso de genes: si ambos padres tienen genes especiales, el hijo puede heredar uno aleatorio o ambos (como lista)
+            parent_genes = set()
+            if self.gen != "normal":
+                parent_genes.add(self.gen)
+            if partner.gen != "normal":
+                parent_genes.add(partner.gen)
+
+            if parent_genes:
+                # El hijo puede heredar uno de los genes especiales aleatoriamente, o ambos si hay más de uno
+                genes_hijo = random.choice(list(parent_genes)) if len(parent_genes) == 1 else list(parent_genes)
+                hijo_mutado = True
+            else:
+                genes_hijo = "normal"
+                hijo_mutado = False
+
+            # Hereda memoria de comida y agua de ambos padres
             child_memory_food = self.memory_food.union(partner.memory_food)
             child_memory_water = self.memory_water.union(partner.memory_water)
 
-            child = Agent(pos=self.pos, map=self.map, generation=new_generation, memory_food=child_memory_food, memory_water=child_memory_water)
+            # Crear el nuevo agente hijo
+            child = Agent(
+                pos=self.pos,
+                map=self.map,
+                generation=new_generation,
+                memory_food=child_memory_food,
+                memory_water=child_memory_water,
+                gen=genes_hijo,
+                mutated=hijo_mutado
+            )
             self.map.agents.append(child)
-            # print(f"NACIMIENTO de un nuevo agente en {self.pos}, sexo {child.sex}")
-            
-            # Actualizar los atributos de reproducción
+
+            # Actualizar atributos de reproducción
             self.n_children += 1
             partner.n_children += 1
             self.reproduction_cooldown = 3

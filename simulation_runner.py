@@ -11,8 +11,8 @@ resumenes = []
 
 for run_id in range(1, NUM_RUNS + 1):
     print(f"Ejecutando simulación {run_id}...")
-    resumen, histories, agua, comida,timeline = run_simulation(run_id=run_id, visualize=False, MAX_AGENTES=15, map_x=10, map_y=10, water_min=2, water_max=5,
-                    agents_min=4, agents_max=6, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
+    resumen, histories, agua, comida,timeline = run_simulation(run_id=run_id, visualize=False, MAX_AGENTES=150, map_x=30, map_y=30, water_min=2, water_max=5,
+                    agents_min=10, agents_max=20, agent_energy_min=20, agent_energy_max=30, agent_thrist_min=20, agent_thrist_max=30,
                     food_min=5, food_max=10, new_food_chance=1)
     resumenes.append(resumen)
 
@@ -76,7 +76,7 @@ for run_id in range(1, NUM_RUNS + 1):
     with open(f"{OUTPUT_DIR_RUNS}/run_{run_id}_timeline.csv", "w", newline="") as f:
         fieldnames = ["Iteración", "Agente", "Posición", "Energía", "Sed", "Edad",
                       "Tiene Hambre", "Tiene Sed", "Ha Comido", "Ha Bebido",
-                      "Muerto", "Causa de Muerte", "Generación", "Hijos"]
+                      "Muerto", "Causa de Muerte", "Generación", "Hijos", "Genes"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for paso in timeline:

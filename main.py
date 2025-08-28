@@ -55,7 +55,8 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
                 "Muerto": False,
                 "Causa de Muerte": "",
                 "Generación": ag.generation, 
-                "Hijos": ag.n_children       
+                "Hijos": ag.n_children,     
+                "Genes": ag.gen 
             }
 
             if ag.is_dead() == False:
@@ -118,7 +119,10 @@ def run_simulation(run_id=1, visualize=False, MAX_AGENTES=15, map_x=12, map_y=12
         "comidas_totales": sum(ag.times_eaten for ag in agentes),
         "bebidas_totales": sum(ag.times_drunk for ag in agentes),
         "num_hijos_totales": sum(1 for ag in agentes if ag.generation != 0),
-        "generation": max((ag.generation for ag in agentes), default=0)
+        "generation": max((ag.generation for ag in agentes), default=0),
+        "num_normales": sum(1 for ag in agentes if ag.gen == "normal"),
+        "num_tontos": sum(1 for ag in agentes if "tonto" in ag.gen),
+        "num_fertiles": sum(1 for ag in agentes if "fertil" in ag.gen)
     }
 
     historial_total = [ag.history for ag in agentes]

@@ -163,7 +163,7 @@ def plot_timeline(run_id=1, ax=None):
         # Para muchos agentes, generar colores automáticamente
         cmap = plt.get_cmap('tab20')
         if len(agentes) > 20:
-            cmap = cm.get_cmap('hsv')
+            cmap = cm.hsv
         colores_agentes = [cmap(i / len(agentes)) for i in range(len(agentes))]
     
     for i, ag in enumerate(agentes):
@@ -283,6 +283,7 @@ def plot_alive_count(run_id=1, ax=None):
         plt.tight_layout()
         plt.show()
 
+
 def plot_run_summary(run_id, axes=None):
     resumen_path = "output/resumen_runs.csv"
     
@@ -304,22 +305,22 @@ def plot_run_summary(run_id, axes=None):
 
     row = df_run.iloc[0]
 
-    # Si no se proporcionan axes, crear figura independiente
+    # Si no se proporcionan axes, crear figura independiente con 4 subgráficas
     if axes is None:
-        fig, axes = plt.subplots(1, 3, figsize=(14, 6))
+        fig, axes = plt.subplots(1, 4, figsize=(18, 6))
         standalone = True
     else:
         standalone = False
 
-    # Gráfica de agentes
+    # Gráfica 1: Distribución por Sexo
     axes[0].pie([row["num_hombres"], row["num_mujeres"]],
-            labels=["Hombres", "Mujeres"],
-            autopct='%1.1f%%',
-            startangle=90,
-            colors=["lightblue", "lightpink"])
+                labels=["Hombres", "Mujeres"],
+                autopct='%1.1f%%',
+                startangle=90,
+                colors=["lightblue", "lightpink"])
     axes[0].set_title("Distribución por Sexo", fontsize=12 if not standalone else 14)
 
-    # Gráficas por muerte
+    # Gráfica 2: Causas de Muerte
     muertes = {
         "Sed": row["muertes_sed"],
         "Energía": row["muertes_energia"],
@@ -328,72 +329,118 @@ def plot_run_summary(run_id, axes=None):
     }
 
     axes[1].pie(muertes.values(),
-            labels=muertes.keys(),
-            autopct='%1.1f%%',
-            startangle=90,
-            colors=["#91c7b1", "#f4a582", "#d1c4e9", "#cccccc"])
+                labels=muertes.keys(),
+                autopct='%1.1f%%',
+                startangle=90,
+                colors=["#91c7b1", "#f4a582", "#d1c4e9", "#cccccc"])
     axes[1].set_title("Causas de Muerte", fontsize=12 if not standalone else 14)
 
-    # Gráfica de barras
+    # Gráfica 3: Estadísticas Finales
     etiquetas = ["Edad Media", "Comidas", "Bebidas", "Hijos", "Generaciones"]
-    valores = [row["edad_media"], row["comidas_totales"], row["bebidas_totales"], row["num_hijos_totales"], row["generation"]]
-    colores = ["#6baed6", "#74c476", "#fd8d3c", "#d62728", "#e377c2"]
+    valores = [
+        row["edad_media"],
+        row["comidas_totales"],
+        row["bebidas_totales"],
+        row["num_hijos_totales"],
+        row["generation"]
+    ]
+    colores = ["#6baed6", "#74c476", "#fd8d3c", "#d62728", "#e377c2", "#6e12c5", "#7f7f7f", "#bcbd22"]
 
     axes[2].bar(etiquetas, valores, color=colores, alpha=0.9)
     axes[2].set_title("Estadísticas Finales", fontsize=12 if not standalone else 14)
     axes[2].set_ylabel("Cantidad", fontsize=10 if not standalone else 12)
-    
-    # Rotar etiquetas del eje x si no es standalone para mejor legibilidad
     if not standalone:
         axes[2].tick_params(axis='x', rotation=45, labelsize=8)
 
-    if standalone:
-        plt.tight_layout()
-        plt.show()
-
 def plot_combined_run_analysis(run_id):
-    """
-    Función que combina todas las gráficas en una sola imagen
-    """
     # Crear figura grande con subplots
-    fig = plt.figure(figsize=(20, 16))
-    fig.suptitle(f'Análisis Completo - Run {run_id}', fontsize=24, fontweight='bold', y=0.98)
+    fig = plt.figure(figsize=(20, 20))
+    fig.suptitle(f'Análisis Completo - Run {run_id}', fontsize=24, fontweight='bold', y=0.96)
     
-    # Definir el grid de subplots
-    gs = fig.add_gridspec(3, 4, height_ratios=[1.2, 1, 0.8], width_ratios=[1, 1, 1, 1], 
-                         hspace=0.3, wspace=0.3)
+    # Definir el grid de subplots: 4 filas, 4 columnas
+    gs = fig.add_gridspec(4, 4,
+                          height_ratios=[1.2, 1, 0.8, 1.2],
+                          width_ratios=[1, 1, 1, 1],
+                          hspace=0.4, wspace=0.3)
     
-    # Timeline (ocupa las primeras 2 filas completas)
+    # Timeline (ocupa la fila 0 completa)
     ax_timeline = fig.add_subplot(gs[0, :])
     plot_timeline(run_id, ax_timeline)
     
-    # Heatmap (fila 2, columnas 1-2)
+    # Heatmap (fila 1, columnas 0-1)
     ax_heatmap = fig.add_subplot(gs[1, :2])
     plot_run_heatmap(run_id, ax_heatmap)
     
-    # Alive count (fila 2, columnas 3-4)
+    # Alive count (fila 1, columnas 2-3)
     ax_alive = fig.add_subplot(gs[1, 2:])
     plot_alive_count(run_id, ax_alive)
     
-    # Summary plots (fila 3, todas las columnas divididas en 3)
+    # Summary plots (fila 2, columnas 0-3 divididas en 4)
     ax_summary1 = fig.add_subplot(gs[2, 0])
     ax_summary2 = fig.add_subplot(gs[2, 1])
     ax_summary3 = fig.add_subplot(gs[2, 2])
-    
-    # Usar un subplot dummy para la cuarta columna si es necesario
-    ax_summary4 = fig.add_subplot(gs[2, 3])
-    ax_summary4.axis('off')  # Ocultar el cuarto subplot
-    
+    # ax_summary4 = fig.add_subplot(gs[2, 3])
     plot_run_summary(run_id, [ax_summary1, ax_summary2, ax_summary3])
     
-    # Guardar la imagen combinada
+    # Gráfica de Genes (fila 3 completa)
+    ax_genes = fig.add_subplot(gs[3, :])
+    _plot_genes_evolution(run_id, ax_genes)
+    
+    # Guardar y mostrar
     output_dir = 'output/graphs/runs'
     os.makedirs(output_dir, exist_ok=True)
     save_path = os.path.join(output_dir, f'run_{run_id}_combined_analysis.png')
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     print(f'Análisis combinado guardado en: {save_path}')
-    
     plt.show()
+
+
+def _plot_genes_evolution(run_id, ax):
+    timeline_file = f"output/runs/run_{run_id}_timeline.csv"
+    if not os.path.exists(timeline_file):
+        ax.text(0.5, 0.5, "No hay datos\nde genes por iteración",
+                ha='center', va='center', fontsize=14, color='gray')
+        ax.axis('off')
+        return
+
+    df_tl = pd.read_csv(timeline_file)
+
+    # Excluir agentes muertos
+    if "Causa de Muerte" in df_tl.columns:
+        df_tl = df_tl[df_tl["Causa de Muerte"].isna() | (df_tl["Causa de Muerte"] == "")]
+    elif "Muerto" in df_tl.columns:
+        df_tl = df_tl[df_tl["Muerto"] == False]
+
+    if df_tl.empty:
+        ax.text(0.5, 0.5, "No hay agentes vivos\npara graficar",
+                ha='center', va='center', fontsize=14, color='gray')
+        ax.axis('off')
+        return
+
+    # Contar por iteración y por gen
+    df_gen = df_tl.groupby(['Iteración', 'Genes']).size().unstack(fill_value=0)
+
+    # Ordenar tus genes
+    genes = ['normal', 'tonto', 'fertil']  # extiende según necesites
+    for g in genes:
+        if g not in df_gen.columns:
+            df_gen[g] = 0
+    df_gen = df_gen[genes]
+
+    # Dibujar barras apiladas
+    bottom = pd.Series(0, index=df_gen.index)
+    for gen in genes:
+        ax.bar(df_gen.index, df_gen[gen],
+               bottom=bottom, label=gen.capitalize(), alpha=0.8)
+        bottom += df_gen[gen]
+
+    # Estilo
+    ax.set_title("Genes a lo largo del tiempo", fontsize=18, fontweight='600', pad=10)
+    ax.set_xlabel("Iteración", fontsize=14)
+    ax.set_ylabel("Número de agentes", fontsize=14)
+    ax.grid(axis='y', linestyle='--', alpha=0.3)
+    ax.legend(fontsize=12, loc='upper left')
+    ax.set_facecolor('#FAFAFA')
 
 if __name__ == "__main__":
     for run_id in range(1, 11):
